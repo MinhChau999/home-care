@@ -1,14 +1,21 @@
 <template>
-  <HelloWorld/>
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+import {PUBLIC_LAYOUT} from '@/constants';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  setup() {
+    const route = useRoute();
+    return {
+      layout: computed(() => (route.meta.layout || PUBLIC_LAYOUT) + "-layout"),
+    }
   }
 }
 </script>
