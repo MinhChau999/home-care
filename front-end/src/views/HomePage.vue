@@ -1,9 +1,7 @@
 <template>
-  <h3>Trang HomePage</h3>
+<h2>Trang test</h2>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
