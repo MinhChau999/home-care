@@ -40,6 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
+
+        'patient' => [
+            'driver' => 'passport',
+            'provider' => 'patients'
+        ],
     ],
 
     /*
@@ -69,6 +78,10 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'patients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Patients::class,
+        ],
     ],
 
     /*
