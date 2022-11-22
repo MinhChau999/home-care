@@ -24,7 +24,7 @@ const routes = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "user-login" */ "../views/auth/UserLogin.vue"
+        /* webpackChunkName: "user-login" */ "../views/auth/CustomerLogin.vue"
       ),
     name: "user-login",
   },
@@ -35,7 +35,7 @@ const routes = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "user-login" */ "../views/auth/UserRegister.vue"
+        /* webpackChunkName: "user-login" */ "../views/auth/CustomerRegister.vue"
       ),
     name: "user-register",
   },
