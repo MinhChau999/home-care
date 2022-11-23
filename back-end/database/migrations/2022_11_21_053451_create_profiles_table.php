@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->unique();
-            $table->foreignId('specialist_id')->constrained('specialists')->nullable();
+            $table->foreignId('specialist_id')->nullable()->constrained('specialists');
             $table->string('academic')->nullable();
             $table->string('experience')->nullable();
             $table->integer('rank')->default(0);

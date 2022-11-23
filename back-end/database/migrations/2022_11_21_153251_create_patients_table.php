@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->boolean('gender')->default(0);
             $table->date('birthday')->nullable();
-            $table->foreignId('places')->constrained();
+            $table->foreignId('places')->nullable()->constrained();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
