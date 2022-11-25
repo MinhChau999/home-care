@@ -25,8 +25,8 @@ class RegisterPatiantRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:patients',
-            'name' => 'required|min:6',
-            'password' => 'required|confirmed|min:6',
+            'name' => 'required|min:3',
+            'password' => 'required|min:6',
         ];
     }
 }

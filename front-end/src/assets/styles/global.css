@@ -2030,10 +2030,9 @@ textarea.form-control {
           box-shadow: 0 0 0 0.2rem rgba(16, 196, 105, 0.25); }
 
 .invalid-feedback {
-  display: none;
   width: 100%;
   margin-top: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #ff5b5b; }
 
 .invalid-tooltip {
@@ -8222,7 +8221,7 @@ a.text-danger:hover, a.text-danger:focus {
   color: #eef2f7 !important; }
 
 a.text-light:hover, a.text-light:focus {
-  color: #bacadf !important; }
+  color: #bacadf !important; }uted
 
 .text-dark {
   color: #323a46 !important; }

@@ -26,33 +26,16 @@
                   <ul class="metismenu side-nav mm-show">
                     <li class="side-nav-title side-nav-item">Navigation</li>
 
-                    <li class="side-nav-item">
+                    <li class="side-nav-item mm-active">
                       <a
                         href="javascript: void(0);"
                         class="side-nav-link"
-                        aria-expanded="false"
+                        aria-expanded="true"
                       >
                         <i class="uil-home-alt"></i>
                         <span class="badge badge-success float-right">4</span>
                         <span> Dashboards </span>
                       </a>
-                      <ul
-                        class="side-nav-second-level mm-collapse"
-                        aria-expanded="false"
-                      >
-                        <li>
-                          <a href="dashboard-analytics.html">Analytics</a>
-                        </li>
-                        <li>
-                          <a href="dashboard-crm.html">CRM</a>
-                        </li>
-                        <li>
-                          <a href="index.html">Ecommerce</a>
-                        </li>
-                        <li>
-                          <a href="dashboard-projects.html">Projects</a>
-                        </li>
-                      </ul>
                     </li>
                   </ul>
                 </div>
