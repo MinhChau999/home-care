@@ -3,8 +3,7 @@
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left-side-menu mm-show">
       <!-- LOGO -->
-      <a href="index.html" class="logo text-center logo-light">
-      </a>
+      <router-link :to="{name: 'dashboard'}" class="logo text-center logo-light"> </router-link>
 
       <div
         class="h-100 mm-active"
@@ -60,14 +59,7 @@
           class="simplebar-track simplebar-vertical"
           style="visibility: visible"
         >
-          <div
-            class="simplebar-scrollbar"
-            style="
-              height: 268px;
-              transform: translate3d(0px, 0px, 0px);
-              display: block;
-            "
-          ></div>
+          <div class="simplebar-scrollbar"></div>
         </div>
       </div>
       <!-- Sidebar -left -->
@@ -82,7 +74,10 @@
       <div class="content">
         <!-- Topbar Start -->
         <div class="navbar-custom">
-          <ul class="list-unstyled topbar-right-menu float-right mb-0">
+          <ul
+            class="list-unstyled topbar-right-menu float-right mb-0"
+            v-click-outside="onClickOutside"
+          >
             <li class="dropdown notification-list d-lg-none">
               <a
                 class="nav-link dropdown-toggle arrow-none"
@@ -105,91 +100,35 @@
                 </form>
               </div>
             </li>
-            <li class="dropdown notification-list topbar-dropdown">
+
+            <!-- start notification  -->
+            <li
+              class="dropdown notification-list"
+              :class="{
+                show: dropdownNotification,
+              }"
+            >
               <a
                 class="nav-link dropdown-toggle arrow-none"
                 data-toggle="dropdown"
                 href="#"
                 role="button"
                 aria-haspopup="false"
-                aria-expanded="false"
-              >
-                <img
-                  src="../assets/images/flags/us.jpg"
-                  alt="user-image"
-                  class="mr-0 mr-sm-1"
-                  height="12"
-                />
-                <span class="align-middle d-none d-sm-inline-block"
-                  >English</span
-                >
-                <i
-                  class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"
-                ></i>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu"
-              >
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                  <img
-                    src="../assets/images/flags/germany.jpg"
-                    alt="user-image"
-                    class="mr-1"
-                    height="12"
-                  />
-                  <span class="align-middle">German</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                  <img
-                    src="../assets/images/flags/italy.jpg"
-                    alt="user-image"
-                    class="mr-1"
-                    height="12"
-                  />
-                  <span class="align-middle">Italian</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                  <img
-                    src="../assets/images/flags/spain.jpg"
-                    alt="user-image"
-                    class="mr-1"
-                    height="12"
-                  />
-                  <span class="align-middle">Spanish</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                  <img
-                    src="../assets/images/flags/russia.jpg"
-                    alt="user-image"
-                    class="mr-1"
-                    height="12"
-                  />
-                  <span class="align-middle">Russian</span>
-                </a>
-              </div>
-            </li>
-
-            <li class="dropdown notification-list">
-              <a
-                class="nav-link dropdown-toggle arrow-none"
-                data-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-haspopup="false"
-                aria-expanded="false"
+                :aria-expanded="dropdownNotification"
+                v-on:click="
+                  (dropdownNotification = !dropdownNotification),
+                    (dropdownProfile = false)
+                "
               >
                 <i class="dripicons-bell noti-icon"></i>
                 <span class="noti-icon-badge"></span>
               </a>
               <div
                 class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg"
+                x-placement="bottom-end"
+                :class="{
+                  show: dropdownNotification,
+                }"
               >
                 <!-- item-->
                 <div class="dropdown-item noti-title">
@@ -353,15 +292,26 @@
                 </a>
               </div>
             </li>
+            <!-- end notification -->
 
-            <li class="dropdown notification-list">
+            <!-- start user -->
+            <li
+              class="dropdown notification-list"
+              :class="{
+                show: dropdownProfile,
+              }"
+            >
               <a
                 class="nav-link dropdown-toggle nav-user arrow-none mr-0"
                 data-toggle="dropdown"
                 href="#"
                 role="button"
                 aria-haspopup="false"
-                aria-expanded="false"
+                :aria-expanded="dropdownProfile"
+                v-on:click="
+                  (dropdownProfile = !dropdownProfile),
+                    (dropdownNotification = false)
+                "
               >
                 <span class="account-user-avatar">
                   <img
@@ -375,8 +325,15 @@
                   <span class="account-position">Founder</span>
                 </span>
               </a>
+              <!-- <div
+                class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown"
+              > -->
               <div
                 class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown"
+                x-placement="bottom-end"
+                :class="{
+                  show: dropdownProfile,
+                }"
               >
                 <!-- item-->
                 <div class="dropdown-header noti-title">
@@ -400,20 +357,18 @@
                   <i class="mdi mdi-lifebuoy mr-1"></i>
                   <span>Support</span>
                 </a>
-
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                  <i class="mdi mdi-lock-outline mr-1"></i>
-                  <span>Lock Screen</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <a
+                  href="javascript:void(0);"
+                  class="dropdown-item notify-item"
+                  v-on:click="logout"
+                >
                   <i class="mdi mdi-logout mr-1"></i>
                   <span>Logout</span>
                 </a>
               </div>
             </li>
+            <!-- end user  -->
           </ul>
           <button class="button-menu-mobile open-left disable-btn">
             <i class="mdi mdi-menu"></i>
@@ -577,3 +532,46 @@
     <!-- ============================================================== -->
   </div>
 </template>
+
+<script>
+import vClickOutside from "click-outside-vue3";
+export default {
+  directives: {
+    clickOutside: vClickOutside.directive,
+  },
+
+  computed: {
+    loggedIn() {
+      return this.$store.state.authAdmin.status.loggedIn;
+    },
+  },
+
+  mounted() {
+    if (!this.loggedIn) {
+      this.$router.push({ name: "admin-login" });
+    }
+  },
+
+  data() {
+    return {
+      dropdownProfile: false,
+      dropdownNotification: false,
+    };
+  },
+
+  methods: {
+    onClickOutside() {
+      if (this.dropdownProfile == true) {
+        this.dropdownProfile = false;
+      }
+      if (this.dropdownNotification == true) {
+        this.dropdownNotification = false;
+      }
+    },
+    logout() {
+      this.$store.dispatch("authAdmin/logout");
+      this.$router.push({ name: "admin-login" });
+    },
+  },
+};
+</script>

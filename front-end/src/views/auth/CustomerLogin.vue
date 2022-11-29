@@ -22,10 +22,7 @@
     <Form @submit="login" :validation-schema="schema">
       <div class="form-group">
         <label for="emailaddress">Email address</label>
-        <Field
-          name="email"
-          v-slot="{ field, errors, meta }"
-        >
+        <Field name="email" v-slot="{ field, errors, meta }">
           <input
             v-model="user.email"
             v-bind="field"
@@ -40,7 +37,7 @@
           />
         </Field>
         <div v-if="errors.email" class="invalid-feedback">
-          {{ errors.email }}
+          {{ errors.email[0] }}
         </div>
         <ErrorMessage name="email" class="invalid-feedback" />
       </div>
@@ -57,11 +54,11 @@
             type="password"
             id="password"
             placeholder="Enter your password"
-            :class="{ 'is-invalid': !!errors.length || errors.password}"
+            :class="{ 'is-invalid': !!errors.length || errors.password }"
           />
         </Field>
         <div v-if="errors.password" class="invalid-feedback">
-          {{ errors.password }}
+          {{ errors.password[0] }}
         </div>
         <ErrorMessage name="password" class="invalid-feedback" />
       </div>
@@ -144,8 +141,7 @@
 </template>
 
 <script>
-import BaseRequest from "@/services/BaseRequest";
-import Notification from "@/services/Notification";
+import Notification from "@/services/notification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -174,21 +170,32 @@ export default {
         password: "",
       },
       isPending: false,
-      errors:{},
+      errors: {},
       schema,
     };
   },
 
-  mounted() {},
+  computed: {
+    loggedIn() {
+      return this.$store.state.authUser.status.loggedIn;
+    },
+  },
+
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push({ name: "landing-page" });
+    }
+  },
 
   methods: {
     login() {
       this.isPending = true;
-      BaseRequest.post("login", this.user)
+      this.errors = {};
+      this.$store
+        .dispatch("authUser/login", this.user)
         .then((response) => {
-          window.localStorage.setItem("token", response.data.data.token);
           this.$router.push({ name: "landing-page" });
-          Notification.success(response.data.message);
+          Notification.success(response.message);
         })
         .catch((error) => {
           Notification.error(error.response.data.data.error);

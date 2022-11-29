@@ -33,8 +33,8 @@ class ApiPatientController extends BaseController
             $patient = Patient::where('email', $input['email'])->first();
             // $patient = auth()->user();
             
-            $success['token'] = $patient->createToken('home_care')->accessToken;
             $success['name'] = $patient->name;
+            $success['token'] = $patient->createToken('home_care')->accessToken;
             return $this->sendRespone($success, 'Đăng nhập thành công');
         } else {
             return $this->sendError('Đăng nhập không thành công', ['error' => 'Sai tên tài khoản hoặc mật khẩu']);

@@ -32,8 +32,9 @@ class ApiUserController extends BaseController
             'password' => $input['password']
         ])){
             $user = User::where('email', $input['email'])->first();
-            $success['token'] = $user->createToken('home_care')->accessToken;
             $success['name'] = $user->name;
+            $success['role'] = $user->role;
+            $success['token'] = $user->createToken('home_care')->accessToken;
             return $this->sendRespone($success, 'Đăng nhập thành công');
         } else {
             return $this->sendError('Thất bại', ['error'=>'Sai tên tài khoản hoặc mật khẩu']);

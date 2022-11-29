@@ -22,10 +22,7 @@
     <Form @submit="register" :validation-schema="schema">
       <div class="form-group">
         <label for="name">Name</label>
-        <Field
-          name="name"
-          v-slot="{ field, errors, meta }"
-        >
+        <Field name="name" v-slot="{ field, errors, meta }">
           <input
             v-model="user.name"
             v-bind="field"
@@ -40,16 +37,13 @@
           />
         </Field>
         <div v-if="errors.name" class="invalid-feedback">
-          {{ errors.name }}
+          {{ errors.name[0] }}
         </div>
         <ErrorMessage name="name" class="invalid-feedback" />
       </div>
       <div class="form-group">
         <label for="emailaddress">Email address</label>
-        <Field
-          name="email"
-          v-slot="{ field, errors, meta }"
-        >
+        <Field name="email" v-slot="{ field, errors, meta }">
           <input
             v-model="user.email"
             v-bind="field"
@@ -64,7 +58,7 @@
           />
         </Field>
         <div v-if="errors.email" class="invalid-feedback">
-          {{ errors.email }}
+          {{ errors.email[0] }}
         </div>
         <ErrorMessage name="email" class="invalid-feedback" />
       </div>
@@ -85,7 +79,7 @@
           />
         </Field>
         <div v-if="errors.password" class="invalid-feedback">
-          {{ errors.password }}
+          {{ errors.password[0] }}
         </div>
         <ErrorMessage name="password" class="invalid-feedback" />
       </div>
@@ -168,8 +162,7 @@
 </template>
 
 <script>
-import BaseRequest from "@/services/BaseRequest";
-import Notification from "@/services/Notification";
+import Notification from "@/services/notification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -204,25 +197,36 @@ export default {
         password: "",
       },
       isPending: false,
-      errors:{},
+      errors: {},
       schema,
     };
   },
 
-  mounted() {},
+  computed: {
+    loggedIn() {
+      return this.$store.state.authUser.status.loggedIn;
+    },
+  },
+
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push({ name: "landing-page" });
+    }
+  },
 
   methods: {
     register() {
       this.isPending = true;
-      BaseRequest.post("register", this.user)
+      this.errors = {};
+      this.$store
+        .dispatch("authUser/register", this.user)
         .then((response) => {
-          window.localStorage.setItem("token", response.data.data.token);
-          Notification.success(response.data.message);
-          this.$router.push({name : 'landing-page'});
+          this.$router.push({ name: "landing-page" });
+          Notification.success(response.message);
         })
         .catch((error) => {
-          Notification.error(error.response.data.data.error);
-          this.errors = error.response.data.data;
+          Notification.error(error.response.data.message);
+          this.errors = error.response.data.errors;
           this.isPending = false;
         });
     },

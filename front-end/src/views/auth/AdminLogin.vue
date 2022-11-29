@@ -97,8 +97,7 @@
 </template>
 
 <script>
-import BaseRequest from "@/services/BaseRequest";
-import Notification from "@/services/Notification";
+import Notification from "@/services/notification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -133,21 +132,31 @@ export default {
     };
   },
 
-  mounted() {},
+  computed: {
+    loggedIn() {
+      return this.$store.state.authAdmin.status.loggedIn;
+    },
+  },
+
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push({ name: "dashboard" })
+    }
+  },
 
   methods: {
     login() {
       this.isPending = true;
       this.errors = {};
-      BaseRequest.post("admin/login", this.user)
+      this.$store.dispatch("authAdmin/login", this.user)
         .then((response) => {
-          window.localStorage.setItem("token", response.data.data.token);
           this.$router.push({ name: "dashboard" });
-          Notification.success(response.data.message);
+          Notification.success(response.message);
         })
         .catch((error) => {
           Notification.error(error.response.data.data.error);
           this.errors = error.response.data.data;
+          console.clear();
           this.isPending = false;
         });
     },

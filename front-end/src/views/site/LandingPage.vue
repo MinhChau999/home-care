@@ -53,7 +53,7 @@
           </ul>
 
           <!-- right menu -->
-          <ul class="navbar-nav ml-auto align-items-center">
+          <ul class="navbar-nav ml-auto align-items-center col-md-4">
             <li class="nav-item mr-0">
               <a
                 href="https://themes.getbootstrap.com/product/hyper-responsive-admin-dashboard-template/"
@@ -68,6 +68,9 @@
               >
                 <i class="mdi mdi-basket mr-2"></i> Purchase Now
               </a>
+            </li>
+            <li class="nav-item ml-3" v-if="loggedIn">
+              <img src="@/assets/images/users/avatar-1.jpg" alt="user-image" style="height: 32px;" class="rounded-circle">
             </li>
           </ul>
         </div>
@@ -104,7 +107,11 @@
           </div>
           <div class="col-md-5 offset-md-2">
             <div class="text-md-right mt-3 mt-md-0">
-              <img src="../../assets/images/startup.svg" alt="" class="img-fluid" />
+              <img
+                src="../../assets/images/startup.svg"
+                alt=""
+                class="img-fluid"
+              />
             </div>
           </div>
         </div>
@@ -338,7 +345,11 @@
         </div>
         <div class="row mt-2 py-5 align-items-center">
           <div class="col-lg-5">
-            <img src="../../assets/images/features-1.svg" class="img-fluid" alt="" />
+            <img
+              src="../../assets/images/features-1.svg"
+              class="img-fluid"
+              alt=""
+            />
           </div>
           <div class="col-lg-6 offset-lg-1">
             <h3 class="font-weight-normal">Inbuilt applications and pages</h3>
@@ -406,7 +417,11 @@
             ></a>
           </div>
           <div class="col-lg-5 offset-lg-1">
-            <img src="../../assets/images/features-2.svg" class="img-fluid" alt="" />
+            <img
+              src="../../assets/images/features-2.svg"
+              class="img-fluid"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -863,5 +878,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    loggedIn() {
+      return this.$store.state.authUser.status.loggedIn;
+    },
+  },
+};
 </script>

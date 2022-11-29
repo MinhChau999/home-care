@@ -9,9 +9,8 @@ const routes = [
     name: "landing-page",
   },
   {
-    path: "/test",
-    component: () =>
-      import("../views/HomePage.vue"),
+    path: "/booking",
+    component: () => import("../views/site/BookingPage.vue"),
     name: "home-page",
     meta: {
       layout: "site",
@@ -47,7 +46,9 @@ const routes = [
   {
     path: "/admin",
     component: () =>
-      import(/* webpackChunkName: "dashboard" */ "../views/admin/DashBoard.vue"),
+      import(
+        /* webpackChunkName: "dashboard" */ "../views/admin/DashBoard.vue"
+      ),
     name: "dashboard",
     meta: {
       layout: "admin",
@@ -68,7 +69,29 @@ const routes = [
       ),
     name: "admin-login",
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () =>
+      import("../views/PageNotFound.vue"),
+  },
+  // { path: '/admin/:afterAdmin(.*)', component: UserGeneric },
 ];
+
+// Handle Unauthorized Access
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login', '/register', '/home'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const loggedIn = localStorage.getItem('token');
+
+//   // trying to access a restricted page + not logged in
+//   // redirect to login page
+//   if (authRequired && !loggedIn) {
+//     next('/login');
+//   } else {
+//     next();
+//   }
+// });
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
