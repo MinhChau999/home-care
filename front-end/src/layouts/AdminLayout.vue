@@ -3,8 +3,11 @@
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left-side-menu mm-show">
       <!-- LOGO -->
-      <router-link :to="{name: 'dashboard'}" class="logo text-center logo-light"> </router-link>
-
+      <!-- <div class="logo text-center">
+        <router-link :to="{ name: 'dashboard' }">
+          <img src="@/assets/images/logo.png" style="height: 16px" />
+        </router-link>
+      </div> -->
       <div
         class="h-100 mm-active"
         id="left-side-menu-container"
@@ -26,15 +29,14 @@
                     <li class="side-nav-title side-nav-item">Navigation</li>
 
                     <li class="side-nav-item mm-active">
-                      <a
-                        href="javascript: void(0);"
+                      <router-link
+                        :to="{ name: 'dashboard' }"
                         class="side-nav-link"
                         aria-expanded="true"
                       >
                         <i class="uil-home-alt"></i>
-                        <span class="badge badge-success float-right">4</span>
                         <span> Dashboards </span>
-                      </a>
+                      </router-link>
                     </li>
                   </ul>
                 </div>
@@ -191,7 +193,7 @@
                             >
                               <div class="notify-icon">
                                 <img
-                                  src="../assets/images/users/avatar-2.jpg"
+                                  src="@/assets/images/users/avatar-2.jpg"
                                   class="img-fluid rounded-circle"
                                   alt=""
                                 />
@@ -226,7 +228,7 @@
                             >
                               <div class="notify-icon">
                                 <img
-                                  src="../assets/images/users/avatar-4.jpg"
+                                  src="@/assets/images/users/avatar-4.jpg"
                                   class="img-fluid rounded-circle"
                                   alt=""
                                 />
@@ -315,7 +317,7 @@
               >
                 <span class="account-user-avatar">
                   <img
-                    src="../assets/images/users/avatar-1.jpg"
+                    src="@/assets/images/users/avatar-1.jpg"
                     alt="user-image"
                     class="rounded-circle"
                   />
@@ -341,22 +343,34 @@
                 </div>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <router-link
+                  :to="{ name: 'profile-admin' }"
+                  class="dropdown-item notify-item"
+                  v-on:click="hideDropdown"
+                >
                   <i class="mdi mdi-account-circle mr-1"></i>
                   <span>My Account</span>
-                </a>
+                </router-link>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <router-link
+                  :to="{ name: 'edit-profile-admin' }"
+                  class="dropdown-item notify-item"
+                  v-on:click="hideDropdown"
+                >
                   <i class="mdi mdi-account-edit mr-1"></i>
-                  <span>Settings</span>
-                </a>
+                  <span>Edit</span>
+                </router-link>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <router-link
+                  :to="{ name: 'support-admin' }"
+                  class="dropdown-item notify-item"
+                  v-on:click="hideDropdown"
+                >
                   <i class="mdi mdi-lifebuoy mr-1"></i>
                   <span>Support</span>
-                </a>
+                </router-link>
                 <!-- item-->
                 <a
                   href="javascript:void(0);"
@@ -429,7 +443,7 @@
                   <div class="media">
                     <img
                       class="d-flex mr-2 rounded-circle"
-                      src="../assets/images/users/avatar-2.jpg"
+                      src="@/assets/images/users/avatar-2.jpg"
                       alt="Generic placeholder image"
                       height="32"
                     />
@@ -445,7 +459,7 @@
                   <div class="media">
                     <img
                       class="d-flex mr-2 rounded-circle"
-                      src="../assets/images/users/avatar-5.jpg"
+                      src="@/assets/images/users/avatar-5.jpg"
                       alt="Generic placeholder image"
                       height="32"
                     />
@@ -463,42 +477,6 @@
 
         <!-- Start Content-->
         <div class="container-fluid">
-          <!-- start page title -->
-          <div class="row">
-            <div class="col-12">
-              <div class="page-title-box">
-                <div class="page-title-right">
-                  <form class="form-inline">
-                    <div class="form-group">
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          class="form-control form-control-light"
-                          id="dash-daterange"
-                        />
-                        <div class="input-group-append">
-                          <span
-                            class="input-group-text bg-primary border-primary text-white"
-                          >
-                            <i class="mdi mdi-calendar-range font-13"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <a href="javascript: void(0);" class="btn btn-primary ml-2">
-                      <i class="mdi mdi-autorenew"></i>
-                    </a>
-                    <a href="javascript: void(0);" class="btn btn-primary ml-1">
-                      <i class="mdi mdi-filter-variant"></i>
-                    </a>
-                  </form>
-                </div>
-                <h4 class="page-title">Vertical</h4>
-              </div>
-            </div>
-          </div>
-          <!-- end page title -->
-
           <!-- start content -->
           <slot />
           <!-- end content -->
@@ -566,6 +544,11 @@ export default {
       }
       if (this.dropdownNotification == true) {
         this.dropdownNotification = false;
+      }
+    },
+    hideDropdown() {
+      if (this.dropdownProfile == true) {
+        this.dropdownProfile = false;
       }
     },
     logout() {

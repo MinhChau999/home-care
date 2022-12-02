@@ -4,9 +4,9 @@
   </component>
 </template>
 
-<script>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+<script lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 // import {PUBLIC_LAYOUT} from '@/constants';
 
@@ -15,8 +15,7 @@ export default {
     const route = useRoute();
     return {
       layout: computed(() => route.meta.layout + "-layout"),
-    }
-  }
-}
+    };
+  },
+};
 </script>
-

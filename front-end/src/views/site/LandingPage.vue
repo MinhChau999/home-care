@@ -70,7 +70,12 @@
               </a>
             </li>
             <li class="nav-item ml-3" v-if="loggedIn">
-              <img src="@/assets/images/users/avatar-1.jpg" alt="user-image" style="height: 32px;" class="rounded-circle">
+              <img
+                src="@/assets/images/users/avatar-1.jpg"
+                alt="user-image"
+                style="height: 32px"
+                class="rounded-circle"
+              />
             </li>
           </ul>
         </div>

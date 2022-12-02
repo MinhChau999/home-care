@@ -2,7 +2,7 @@ import axios from "axios";
 const API_URL = "http://localhost:8000/api/";
 
 class AuthService {
-  loginUser(user) {
+  loginUser(user: any) {
     return axios
       .post(API_URL + "login", {
         email: user.email,
@@ -16,7 +16,7 @@ class AuthService {
       });
   }
 
-  loginAdmin(user) {
+  loginAdmin(user: any) {
     return axios
       .post(API_URL + "admin/login", {
         email: user.email,
@@ -24,7 +24,10 @@ class AuthService {
       })
       .then((response) => {
         if (response.data.data.token) {
-          localStorage.setItem("tokenadmin", JSON.stringify(response.data.data));
+          localStorage.setItem(
+            "tokenadmin",
+            JSON.stringify(response.data.data)
+          );
         }
         return response.data;
       });
@@ -38,7 +41,7 @@ class AuthService {
     localStorage.removeItem("tokenadmin");
   }
 
-  registerUser(user) {
+  registerUser(user: any) {
     return axios
       .post(API_URL + "register", {
         name: user.name,

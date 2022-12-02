@@ -17,10 +17,7 @@
     <Form @submit="login" :validation-schema="schema">
       <div class="form-group">
         <label for="emailaddress">Email address</label>
-        <Field
-          name="email"
-          v-slot="{ field, errors, meta }"
-        >
+        <Field name="email" v-slot="{ field, errors, meta }">
           <input
             v-model="user.email"
             v-bind="field"
@@ -56,7 +53,7 @@
               'is-invalid': !!errors.length || errors.password,
             }"
           />
-        </Field>        
+        </Field>
         <div v-if="errors.password" class="invalid-feedback">
           {{ errors.password }}
         </div>
@@ -101,7 +98,6 @@ import Notification from "@/services/notification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-
 export default {
   components: {
     Form,
@@ -140,7 +136,7 @@ export default {
 
   mounted() {
     if (this.loggedIn) {
-      this.$router.push({ name: "dashboard" })
+      this.$router.push({ name: "dashboard" });
     }
   },
 
@@ -148,7 +144,8 @@ export default {
     login() {
       this.isPending = true;
       this.errors = {};
-      this.$store.dispatch("authAdmin/login", this.user)
+      this.$store
+        .dispatch("authAdmin/login", this.user)
         .then((response) => {
           this.$router.push({ name: "dashboard" });
           Notification.success(response.message);
