@@ -1,13 +1,14 @@
 <template>
-  <div class="wrapper mm-active">
+  <div class="wrapper mm-active" :class="{ 'sidebar-enable': enableSidebar }">
+    <!-- sidebar-enable -->
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left-side-menu mm-show">
       <!-- LOGO -->
-      <!-- <div class="logo text-center">
+      <div class="logo text-center">
         <router-link :to="{ name: 'dashboard' }">
           <img src="@/assets/images/logo.png" style="height: 16px" />
         </router-link>
-      </div> -->
+      </div>
       <div
         class="h-100 mm-active"
         id="left-side-menu-container"
@@ -384,7 +385,10 @@
             </li>
             <!-- end user  -->
           </ul>
-          <button class="button-menu-mobile open-left disable-btn">
+          <button
+            class="button-menu-mobile open-left disable-btn"
+            v-on:click="enableSidebar = !enableSidebar"
+          >
             <i class="mdi mdi-menu"></i>
           </button>
           <div class="app-search dropdown d-none d-lg-block">
@@ -534,6 +538,7 @@ export default {
     return {
       dropdownProfile: false,
       dropdownNotification: false,
+      enableSidebar: false,
     };
   },
 

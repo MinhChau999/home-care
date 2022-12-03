@@ -1,32 +1,163 @@
 <template>
-  <EasyDataTable
-    buttons-pagination
-    :headers="headers"
-    :items="items"
-    table-class-name="customize-table"
-    :sort-by="sortBy"
-    :sort-type="sortType"
-    multi-sort
-  />
+  <div class="content">
+    <!-- start page title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item">
+                <a href="javascript: void(0);">Hyper</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="javascript: void(0);">eCommerce</a>
+              </li>
+              <li class="breadcrumb-item active">Products</li>
+            </ol>
+          </div>
+          <h4 class="page-title">Products</h4>
+        </div>
+      </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-sm-4">
+                <a href="javascript:void(0);" class="btn btn-danger mb-2"
+                  ><i class="mdi mdi-plus-circle mr-2"></i> Add Products</a
+                >
+              </div>
+              <div class="col-sm-8">
+                <div class="text-sm-right">
+                  <button type="button" class="btn btn-success mb-2 mr-1">
+                    <i class="mdi mdi-settings"></i>
+                  </button>
+                  <button type="button" class="btn btn-light mb-2 mr-1">
+                    Import
+                  </button>
+                  <button type="button" class="btn btn-light mb-2">
+                    Export
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-1">
+              <div class="col-sm-6">
+                <div class="form-group col-sm-6">
+                  <span class="row">Row per page: </span>
+                  <select class="form-control row">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="form-group col-sm-2"></div>
+                  <div class="form-group col-sm-4">
+                    <span class="row">Field: </span>
+                    <select v-model="searchField" class="form-control row">
+                      <option value="player">Player</option>
+                      <option value="team">Team</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <span class="row">Search: </span>
+                    <input
+                      class="form-control row"
+                      type="text"
+                      v-model="searchValue"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end col-->
+            <EasyDataTable
+              buttons-pagination
+              theme-color="#1d90ff"
+              v-model:items-selected="itemsSelected"
+              table-class-name="customize-table"
+              alternating
+              show-index
+              :search-field="searchField"
+              :search-value="searchValue"
+              :rows-per-page="5"
+              :headers="headers"
+              :items="items"
+              :loading="loading"
+            >
+              <template #loading>
+                <img
+                  src="https://thumbs.gfycat.com/AngelicYellowIberianmole.webp"
+                  style="width: 60px; height: 100px"
+                />
+              </template>
+              <template #item-operation="item">
+                <div class="table-action">
+                  <a
+                    @click="viewItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-eye"></i
+                  ></a>
+                  <a
+                    @click="editItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-square-edit-outline"></i
+                  ></a>
+                  <a
+                    @click="deleteItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-delete"></i
+                  ></a>
+                </div>
+              </template>
+            </EasyDataTable>
+            <!-- multi-sort -->
+          </div>
+          <!-- end card-body-->
+        </div>
+        <!-- end card-->
+      </div>
+      <!-- end col -->
+    </div>
+    <!-- end row -->
+  </div>
 </template>
 
 <script lang="ts">
-import type { Header, Item, SortType } from "vue3-easy-data-table";
+import type { Header, Item } from "vue3-easy-data-table";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   data() {
-    const sortBy: string[] = ["number", "weight"];
-    const sortType: SortType[] = ["desc", "asc"];
-
+    // const sortBy: string[] = ["number", "weight"];
+    // const sortType: SortType[] = ["desc", "asc"];
+    const itemsSelected: Item[] = [];
+    const viewItem = (val: Item) => {
+      console.log(val);
+      console.log(itemsSelected);
+    };
     const headers: Header[] = [
-      { text: "PLAYER", value: "player" },
-      { text: "TEAM", value: "team" },
-      { text: "NUMBER", value: "number", sortable: true },
-      { text: "POSITION", value: "position" },
-      { text: "HEIGHT", value: "height" },
-      { text: "WEIGHT (lbs)", value: "weight", sortable: true },
-      { text: "LAST ATTENDED", value: "lastAttended" },
-      { text: "COUNTRY", value: "country" },
+      { text: "Player", value: "player" },
+      { text: "Team", value: "team" },
+      { text: "Number", value: "number" },
+      { text: "Position", value: "position" },
+      { text: "Height", value: "height" },
+      { text: "Weight (lbs)", value: "weight" },
+      { text: "Last Attend", value: "lastAttended" },
+      { text: "Country", value: "country" },
+      { text: "Operation", value: "operation" },
     ];
 
     const items: Item[] = [
@@ -90,46 +221,84 @@ export default {
         lastAttended: "Filathlitikos",
         country: "Greece",
       },
+      {
+        player: "Kevin Durant II",
+        team: "BKN",
+        number: 7,
+        position: "F",
+        height: "6-10",
+        weight: 242,
+        lastAttended: "Texas-Austin",
+        country: "USA",
+      },
+      {
+        player: "Giannis Antetokounmpo",
+        team: "MIL",
+        number: 34,
+        position: "F",
+        height: "6-11",
+        weight: 242,
+        lastAttended: "Filathlitikos",
+        country: "Greece",
+      },
+      {
+        player: "Kevin Durant II",
+        team: "BKN",
+        number: 7,
+        position: "F",
+        height: "6-10",
+        weight: 242,
+        lastAttended: "Texas-Austin",
+        country: "USA",
+      },
+      {
+        player: "Giannis Antetokounmpo",
+        team: "MIL",
+        number: 34,
+        position: "F",
+        height: "6-11",
+        weight: 242,
+        lastAttended: "Filathlitikos",
+        country: "Greece",
+      },
+      {
+        player: "Kevin Durant II",
+        team: "BKN",
+        number: 7,
+        position: "F",
+        height: "6-10",
+        weight: 242,
+        lastAttended: "Texas-Austin",
+        country: "USA",
+      },
+      {
+        player: "Giannis Antetokounmpo",
+        team: "MIL",
+        number: 34,
+        position: "F",
+        height: "6-11",
+        weight: 242,
+        lastAttended: "Filathlitikos",
+        country: "Greece",
+      },
     ];
     return {
-      sortBy,
-      sortType,
       items,
       headers,
+      searchField: "player",
+      searchValue: "",
+      itemsSelected,
+      loading: false,
+      viewItem,
     };
   },
-};
+  methods: {
+    editItem(item: Item[]): void {
+      console.log(item);
+    },
+    deleteItem(item: Item[]) {
+      console.log(item);
+    },
+  },
+});
 </script>
-
-<style>
-.customize-table {
-  --easy-table-border: 1px solid #445269;
-  --easy-table-row-border: 1px solid #445269;
-  --easy-table-header-font-size: 14px;
-  --easy-table-header-height: 50px;
-  --easy-table-header-font-color: #c1cad4;
-  --easy-table-header-background-color: #2d3a4f;
-  --easy-table-header-item-padding: 10px 15px;
-  --easy-table-body-even-row-font-color: #fff;
-  --easy-table-body-even-row-background-color: #4c5d7a;
-  --easy-table-body-row-font-color: #c0c7d2;
-  --easy-table-body-row-background-color: #2d3a4f;
-  --easy-table-body-row-height: 50px;
-  --easy-table-body-row-font-size: 14px;
-  --easy-table-body-row-hover-font-color: #2d3a4f;
-  --easy-table-body-row-hover-background-color: #eee;
-  --easy-table-body-item-padding: 10px 15px;
-  --easy-table-footer-background-color: #2d3a4f;
-  --easy-table-footer-font-color: #c0c7d2;
-  --easy-table-footer-font-size: 14px;
-  --easy-table-footer-padding: 0px 10px;
-  --easy-table-footer-height: 50px;
-  --easy-table-rows-per-page-selector-width: 70px;
-  --easy-table-rows-per-page-selector-option-padding: 10px;
-  --easy-table-scrollbar-track-color: #2d3a4f;
-  --easy-table-scrollbar-color: #2d3a4f;
-  --easy-table-scrollbar-thumb-color: #4c5d7a;
-  --easy-table-scrollbar-corner-color: #2d3a4f;
-  --easy-table-loading-mask-background-color: #2d3a4f;
-}
-</style>
