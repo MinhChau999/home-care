@@ -2,7 +2,7 @@
 import { createToast } from "mosha-vue-toastify";
 import "mosha-vue-toastify/dist/style.css";
 
-export default {
+class Notification {
   success(message: any) {
     createToast(
       { title: "Success!!!", description: message },
@@ -14,7 +14,7 @@ export default {
         toastBackgroundColor: "#10c469",
       }
     );
-  },
+  }
 
   error(message: any) {
     createToast(
@@ -27,7 +27,7 @@ export default {
         toastBackgroundColor: "#ff5b5b",
       }
     );
-  },
+  }
 
   info(message: any) {
     createToast(
@@ -40,7 +40,7 @@ export default {
         toastBackgroundColor: "#35b8e0",
       }
     );
-  },
+  }
 
   warning(message: any) {
     createToast(
@@ -52,5 +52,6 @@ export default {
         transition: "zoom",
       }
     );
-  },
-};
+  }
+}
+export default new Notification();

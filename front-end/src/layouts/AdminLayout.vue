@@ -13,6 +13,7 @@
         class="h-100 mm-active"
         id="left-side-menu-container"
         data-simplebar="init"
+        @click="enableSidebar = false"
       >
         <div class="simplebar-wrapper" style="margin: 0px">
           <div class="simplebar-height-auto-observer-wrapper">
@@ -28,17 +29,118 @@
                   <!--- Sidemenu -->
                   <ul class="metismenu side-nav mm-show">
                     <li class="side-nav-title side-nav-item">Navigation</li>
-
-                    <li class="side-nav-item mm-active">
+                    <!-- Dashboard -->
+                    <li class="side-nav-item">
                       <router-link
                         :to="{ name: 'dashboard' }"
                         class="side-nav-link"
                         aria-expanded="true"
+                        @click="enableSidebar = false"
                       >
                         <i class="uil-home-alt"></i>
                         <span> Dashboards </span>
                       </router-link>
                     </li>
+                    <!-- Users -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'user-manager' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="uil-users-alt"></i>
+                        <span> Users </span>
+                      </router-link>
+                    </li>
+                    <!-- Doctors -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="mdi mdi-doctor"></i>
+                        <span> Doctors </span>
+                      </router-link>
+                    </li>
+                    <!-- Patient -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="uil-user-plus"></i>
+                        <span> Patients </span>
+                      </router-link>
+                    </li>
+
+                    <!-- Schedules -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="mdi mdi-calendar-weekend-outline"></i>
+                        <span> Schedules </span>
+                      </router-link>
+                    </li>
+                    <!-- Schedules -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="mdi mdi-calendar-check-outline"></i>
+                        <span> Shifts </span>
+                      </router-link>
+                    </li>
+                    <!-- Booking -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="mdi mdi-checkbox-multiple-marked-outline"></i>
+                        <span> Bookings </span>
+                      </router-link>
+                    </li>
+
+                    <!-- Medical Services-->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="uil-medical-drip"></i>
+                        <span> Medical Services </span>
+                      </router-link>
+                    </li>
+
+                    <!-- Medical Products -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="uil-capsule"></i>
+                        <span> Medical Products </span>
+                      </router-link>
+                    </li>
+                    <!--  -->
                   </ul>
                 </div>
               </div>
@@ -81,18 +183,33 @@
             class="list-unstyled topbar-right-menu float-right mb-0"
             v-click-outside="onClickOutside"
           >
-            <li class="dropdown notification-list d-lg-none">
+            <li
+              class="dropdown notification-list d-lg-none"
+              :class="{
+                show: dropdownSearch,
+              }"
+            >
               <a
                 class="nav-link dropdown-toggle arrow-none"
                 data-toggle="dropdown"
                 href="#"
                 role="button"
                 aria-haspopup="false"
-                aria-expanded="false"
+                :aria-expanded="dropdownSearch"
+                v-on:click="
+                  (dropdownSearch = !dropdownSearch),
+                    (dropdownProfile = false),
+                    (dropdownNotification = false)
+                "
               >
                 <i class="dripicons-search noti-icon"></i>
               </a>
-              <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+              <div
+                class="dropdown-menu dropdown-menu-animated dropdown-lg p-0"
+                :class="{
+                  show: dropdownSearch,
+                }"
+              >
                 <form class="p-3">
                   <input
                     type="text"
@@ -120,7 +237,8 @@
                 :aria-expanded="dropdownNotification"
                 v-on:click="
                   (dropdownNotification = !dropdownNotification),
-                    (dropdownProfile = false)
+                    (dropdownProfile = false),
+                    (dropdownSearch = false)
                 "
               >
                 <i class="dripicons-bell noti-icon"></i>
@@ -313,7 +431,8 @@
                 :aria-expanded="dropdownProfile"
                 v-on:click="
                   (dropdownProfile = !dropdownProfile),
-                    (dropdownNotification = false)
+                    (dropdownNotification = false),
+                    (dropdownSearch = false)
                 "
               >
                 <span class="account-user-avatar">
@@ -517,6 +636,7 @@
 
 <script>
 import vClickOutside from "click-outside-vue3";
+
 export default {
   directives: {
     clickOutside: vClickOutside.directive,
@@ -538,6 +658,7 @@ export default {
     return {
       dropdownProfile: false,
       dropdownNotification: false,
+      dropdownSearch: false,
       enableSidebar: false,
     };
   },
@@ -549,6 +670,9 @@ export default {
       }
       if (this.dropdownNotification == true) {
         this.dropdownNotification = false;
+      }
+      if (this.dropdownSearch == true) {
+        this.dropdownSearch = false;
       }
     },
     hideDropdown() {

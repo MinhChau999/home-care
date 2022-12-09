@@ -15,7 +15,7 @@
               <li class="breadcrumb-item active">Products</li>
             </ol>
           </div>
-          <h4 class="page-title">Products</h4>
+          <h4 class="page-title">Users</h4>
         </div>
       </div>
     </div>
@@ -28,8 +28,8 @@
             <div class="row mb-2">
               <div class="col-sm-4">
                 <a href="javascript:void(0);" class="btn btn-danger mb-2"
-                  ><i class="mdi mdi-plus-circle mr-2"></i> Add Products</a
-                >
+                  ><i class="mdi mdi-plus-circle mr-2"></i> Add User
+                </a>
               </div>
               <div class="col-sm-8">
                 <div class="text-sm-right">
@@ -44,8 +44,236 @@
                   </button>
                 </div>
               </div>
-              <!-- end col-->
             </div>
+            <div class="row mb-1">
+              <div class="col-sm-12 col-md-5 row">
+                <div class="form-group col-sm-8">
+                  <span>Rows per page: </span>
+                  <div class="customize-rows-per-page">
+                    <select
+                      class="select-items form-control col-sm-9"
+                      @change="updateRowsPerPageSelect"
+                    >
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-7 row">
+                <div class="col-sm-4"></div>
+                <div class="form-group col-sm-3">
+                  <span>Field: </span>
+                  <select v-model="searchField" class="form-control">
+                    <option
+                      v-for="item in searchName"
+                      v-bind:key="item"
+                      v-bind:value="item"
+                    >
+                      {{ item.charAt(0).toUpperCase() + item.slice(1) }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-sm-5">
+                  <span>Search: </span>
+                  <input
+                    class="form-control"
+                    type="text"
+                    v-model="searchValue"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row mb-1">
+              <div
+                class="col-sm-6 selected"
+                :class="{
+                  show: itemsSelected[0],
+                }"
+              >
+                <div class="btn-group">
+                  <button type="button" class="btn btn-secondary">
+                    <i class="mdi mdi-archive font-16"></i>
+                  </button>
+                  <button type="button" class="btn btn-secondary">
+                    <i class="mdi mdi-alert-octagon font-16"></i>
+                  </button>
+                  <button type="button" class="btn btn-secondary">
+                    <i class="mdi mdi-delete-variant font-16"></i>
+                  </button>
+                </div>
+                <div class="btn-group ml-2">
+                  <button
+                    type="button"
+                    class="btn btn-secondary dropdown-toggle arrow-none"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="mdi mdi-folder font-16"></i>
+                    <i class="mdi mdi-chevron-down"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <span class="dropdown-header">Move to:</span>
+                    <a class="dropdown-item" href="javascript: void(0);"
+                      >Social</a
+                    >
+                    <a class="dropdown-item" href="javascript: void(0);"
+                      >Promotions</a
+                    >
+                    <a class="dropdown-item" href="javascript: void(0);"
+                      >Updates</a
+                    >
+                    <a class="dropdown-item" href="javascript: void(0);"
+                      >Forums</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end col-->
+            <!-- show-index -->
+            <EasyDataTable
+              ref="dataTable"
+              buttons-pagination
+              theme-color="#1d90ff"
+              v-model:items-selected="itemsSelected"
+              table-class-name="customize-table"
+              alternating
+              :search-field="searchField"
+              :search-value="searchValue"
+              :rows-per-page="5"
+              :headers="headers"
+              :items="items"
+              :loading="loading"
+              show-index
+              hide-footer
+            >
+              <template #item-name="{ name, avatar }">
+                <div class="table-user">
+                  <img :src="avatar" class="mr-2 rounded-circle" />
+                  <a href="javascript:void(0);" class="text-dark">{{ name }}</a>
+                </div>
+              </template>
+              <template #item-email="{ email }">
+                <a class="text-dark" href="mailto:{{email}}">{{ email }}</a>
+              </template>
+              <template #item-phone="{ phone }">
+                <a class="text-dark" href="tel:{{phone}}">{{ phone }}</a>
+              </template>
+              <template #loading>
+                <div class="mt-4">
+                  <div
+                    class="spinner-grow text-info ml-1 mr-1"
+                    role="status"
+                  ></div>
+                  <div
+                    class="spinner-grow text-info ml-1 mr-1"
+                    role="status"
+                  ></div>
+                  <div
+                    class="spinner-grow text-info ml-1 mr-1"
+                    role="status"
+                  ></div>
+                </div>
+              </template>
+              <template #item-operation="item">
+                <div class="table-action">
+                  <a
+                    @click="viewItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-eye"></i
+                  ></a>
+                  <a
+                    @click="editItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-square-edit-outline"></i
+                  ></a>
+                  <a
+                    @click="deleteItem(item)"
+                    href="javascript:void(0);"
+                    class="action-icon"
+                  >
+                    <i class="mdi mdi-delete"></i
+                  ></a>
+                </div>
+              </template>
+            </EasyDataTable>
+            <div class="row mb-1 mt-3">
+              <div class="col-sm-12 col-md-5">
+                <div
+                  class="dataTables_info"
+                  id="products-datatable_info"
+                  role="status"
+                  aria-live="polite"
+                >
+                  Showing users
+                  {{ currentPageFirstIndex }} to {{ currentPageLastIndex }} of
+                  {{ clientItemsLength }}
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-7">
+                <ul
+                  class="pagination pagination-rounded mb-0 justify-content-end"
+                >
+                  <li
+                    class="page-item"
+                    @click="prevPage"
+                    :class="{ disabled: currentPaginationNumber == 1 }"
+                  >
+                    <a
+                      class="page-link"
+                      href="javascript: void(0);"
+                      aria-label="Previous"
+                    >
+                      <i class="uil-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li
+                    v-for="paginationNumber in maxPaginationNumber"
+                    :key="paginationNumber"
+                    class="page-item selected"
+                    :class="{
+                      active: paginationNumber === currentPaginationNumber,
+                      show: paginationNumber <= to && paginationNumber >= from,
+                    }"
+                    @click="updatePage(paginationNumber)"
+                  >
+                    <a
+                      class="page-link"
+                      href="javascript: void(0);"
+                      aria-label="Next"
+                    >
+                      {{ paginationNumber }}
+                    </a>
+                  </li>
+                  <li
+                    class="page-item"
+                    @click="nextPage"
+                    :class="{
+                      disabled: currentPaginationNumber == maxPaginationNumber,
+                    }"
+                  >
+                    <a
+                      class="page-link"
+                      href="javascript: void(0);"
+                      aria-label="Next"
+                    >
+                      <i class="uil-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- multi-sort -->
           </div>
           <!-- end card-body-->
         </div>
@@ -58,4 +286,153 @@
   <!-- End Content -->
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+import type { Header, Item } from "vue3-easy-data-table";
+import { defineComponent } from "vue";
+import UserService from "@/services/user.service";
+
+export default defineComponent({
+  data() {
+    // const sortBy: string[] = ["number", "weight"];
+    // const sortType: SortType[] = ["desc", "asc"];
+
+    const itemsSelected: Item[] = [];
+    const headers: Header[] = [
+      // { text: "#", value: "id" },
+      { text: "Name", value: "name", sortable: true, width: 160 },
+      { text: "Email", value: "email", width: 200 },
+      { text: "Phone", value: "phone", width: 160 },
+      { text: "Gender", value: "gender" },
+      { text: "Birthday", value: "birthday", width: 130 },
+      { text: "Role", value: "role" },
+      { text: "Operation", value: "operation" },
+    ];
+
+    const searchName = ["name", "email", "phone", "birthday", "role"];
+
+    const items: Item[] = [];
+    // index related
+    const from = 1;
+    const to = 5;
+
+    return {
+      items,
+      headers,
+      searchField: "name",
+      searchValue: "",
+      searchName,
+      itemsSelected,
+      loading: false,
+      linkLimitPage: 5,
+      from,
+      to,
+    };
+  },
+  async mounted() {
+    await this.getUser();
+  },
+
+  computed: {
+    // index related
+    currentPageFirstIndex(): number {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).currentPageFirstIndex
+        : 0;
+    },
+    currentPageLastIndex(): number {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).currentPageLastIndex
+        : 0;
+    },
+    clientItemsLength(): number {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).clientItemsLength
+        : 0;
+    },
+
+    // pagination related
+    maxPaginationNumber(): number {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).maxPaginationNumber
+        : 0;
+    },
+    currentPaginationNumber(): number {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).currentPaginationNumber
+        : 0;
+    },
+
+    isFirstPage(): boolean {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).isFirstPage
+        : 0;
+    },
+    isLastPage(): boolean {
+      return this.items.length > 0
+        ? (this.$refs.dataTable as any).isLastPage
+        : 0;
+    },
+  },
+  methods: {
+    getUser() {
+      this.loading = true;
+      UserService.getAllUser().then((response: any) => {
+        this.items = response.data;
+        for (var i in this.items) {
+          this.items[i].gender = this.items[i].gender == 0 ? "Nam" : "Nữ";
+        }
+        this.itemsSelected = [];
+        this.loading = false;
+      });
+    },
+    updateRowsPerPageSelect(e: Event): void {
+      (this.$refs.dataTable as any).updateRowsPerPageActiveOption(
+        Number((e.target as HTMLInputElement).value)
+      );
+      this.from = 1;
+      if (this.maxPaginationNumber < 5) {
+        this.to = this.maxPaginationNumber;
+      } else {
+        this.to = 5;
+      }
+    },
+    changeFromAndTo(): void {
+      let halfTotalLink = Math.floor(this.linkLimitPage / 2);
+      this.from = this.currentPaginationNumber - halfTotalLink;
+      this.to = this.currentPaginationNumber + halfTotalLink;
+      if (this.currentPaginationNumber <= halfTotalLink) {
+        this.to = this.linkLimitPage;
+        this.from = 1;
+      }
+      if (
+        this.maxPaginationNumber - this.currentPaginationNumber <
+        halfTotalLink
+      ) {
+        this.from = this.maxPaginationNumber - this.linkLimitPage + 1;
+        this.to = this.maxPaginationNumber;
+      }
+    },
+    updatePage(paginationNumber: number): void {
+      (this.$refs.dataTable as any).updatePage(paginationNumber);
+      this.changeFromAndTo();
+    },
+    nextPage(): void {
+      (this.$refs.dataTable as any).nextPage();
+      this.changeFromAndTo();
+    },
+    prevPage(): void {
+      (this.$refs.dataTable as any).prevPage();
+      this.changeFromAndTo();
+    },
+    viewItem(item: Item[]): void {
+      console.log(item);
+    },
+    editItem(item: Item[]): void {
+      console.log(item);
+    },
+    deleteItem(item: Item[]) {
+      console.log(item);
+    },
+  },
+});
+</script>

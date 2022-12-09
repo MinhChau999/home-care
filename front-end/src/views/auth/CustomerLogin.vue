@@ -140,12 +140,13 @@
   <!-- end .card-body -->
 </template>
 
-<script>
-import Notification from "@/services/notification";
+<script lang="ts">
+import Notification from "@/services/notification.service";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: {
     Form,
     Field,
@@ -193,16 +194,16 @@ export default {
       this.errors = {};
       this.$store
         .dispatch("authUser/login", this.user)
-        .then((response) => {
+        .then((response: any) => {
           this.$router.push({ name: "landing-page" });
           Notification.success(response.message);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           Notification.error(error.response.data.data.error);
           this.errors = error.response.data.data;
           this.isPending = false;
         });
     },
   },
-};
+});
 </script>

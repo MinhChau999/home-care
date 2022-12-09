@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnum;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Controllers\BaseController;
@@ -39,5 +40,14 @@ class ApiUserController extends BaseController
         } else {
             return $this->sendError('Thất bại', ['error'=>'Sai tên tài khoản hoặc mật khẩu']);
         }
+    }
+
+    public function getAllUSer(){
+        $users = User::latest()->get();
+        // Add name Enums from backends
+        foreach($users as $user){
+            $user['role'] = UserRoleEnum::from($user['role'])->name;
+        }
+        return $users = response()->json($users);
     }
 }

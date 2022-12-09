@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import Notification from "@/services/notification";
+import Notification from "@/services/notification.service";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 

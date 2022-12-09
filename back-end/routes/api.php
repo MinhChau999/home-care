@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::post('/admin/register', [ApiUserController::class, 'register'])->name('registerAdmin');
 Route::post('/admin/login', [ApiUserController::class, 'login'])->name('loginAdmin');
+Route::middleware('auth:api-admin')->get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
 
 
 /**

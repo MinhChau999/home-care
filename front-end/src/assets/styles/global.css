@@ -10682,6 +10682,10 @@ button.bg-dark:focus {
   font-weight: 400 !important;
 }
 
+.font-weight-large {
+  font-weight: 550 !important;
+}
+
 .font-weight-bold {
   font-weight: 700 !important;
 }
@@ -10764,9 +10768,13 @@ uted .text-dark {
   color: #323a46 !important;
 }
 
+a.text-dark {
+  color: #323a46 !important;
+}
+
 a.text-dark:hover,
 a.text-dark:focus {
-  color: #121519 !important;
+  color: #6c757d !important;
 }
 
 .text-body {
@@ -18895,6 +18903,34 @@ body[data-leftbar-theme="dark"] .side-nav .side-nav-forth-level li.active > a {
 
 .action-icon:hover {
   color: #6c757d;
+}
+
+.table-user img {
+  height: 30px;
+  width: 30px;
+}
+
+.selected {
+  /* position: absolute;
+  top: 100%;
+  left: 0; */
+  display: none;
+  /* float: left;
+  min-width: 10rem;
+  padding: 0.25rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #e4eaf2;
+  border-radius: 0.25rem; */
+}
+
+.selected.show {
+  display: block;
 }
 
 .customize-table {

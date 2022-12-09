@@ -2,13 +2,15 @@ import AuthService from "@/services/auth.service";
 
 const user = JSON.parse(localStorage.getItem("token") || "[]");
 const admin = JSON.parse(localStorage.getItem("tokenadmin") || "[]");
-const initialStateUser = user
-  ? { status: { loggedIn: true }, user }
-  : { status: { loggedIn: false }, user: null };
+const initialStateUser =
+  user.token != null
+    ? { status: { loggedIn: true }, user }
+    : { status: { loggedIn: false }, user: null };
 
-const initialStateAdmin = admin
-  ? { status: { loggedIn: true }, admin }
-  : { status: { loggedIn: false }, admin: null };
+const initialStateAdmin =
+  admin.token != null
+    ? { status: { loggedIn: true }, admin }
+    : { status: { loggedIn: false }, admin: null };
 
 export const authUser = {
   namespaced: true,
