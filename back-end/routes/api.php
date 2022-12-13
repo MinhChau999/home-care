@@ -21,7 +21,15 @@ use Illuminate\Support\Facades\Route;
  */
 Route::post('/admin/register', [ApiUserController::class, 'register'])->name('registerAdmin');
 Route::post('/admin/login', [ApiUserController::class, 'login'])->name('loginAdmin');
-Route::middleware('auth:api-admin')->get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
+
+Route::group([
+   'as' => 'users.',
+   'prefix' => 'users',
+   'middleware' => 'role:admin',
+], function () {
+   Route::get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
+   Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
+});
 
 
 /**
@@ -33,3 +41,9 @@ Route::post('/login', [ApiPatientController::class, 'login'])->name('loginPatien
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+/**
+ * SendMail
+ */
+
+ Route::get('/admin/reset-password', [ApiUserController::class, 'resetPassword'])->name('resetPassword');

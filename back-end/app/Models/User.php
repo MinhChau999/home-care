@@ -42,6 +42,30 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'level' => UserRoleEnum::class,
+        'role' => UserRoleEnum::class,
     ];
+
+    public function isAdmin()
+    {
+        if ($this->role == UserRoleEnum::Admin) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isDoctor()
+    {
+        if ($this->role == UserRoleEnum::Doctor) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasRole($role)
+    {
+        if (strcasecmp(($this->role->name), $role) == 0) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -25,7 +25,6 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->integer('role')->default(1);
             $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
             $table->timestamps();
         });
     }

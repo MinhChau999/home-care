@@ -19,8 +19,8 @@ class ApiPatientController extends BaseController
         $patiant->password = Hash::make($patiant->password);
         $patiant->save();
         
-        $success['token'] = $patiant->createToken('home_care')->accessToken;
         $success['name'] = $patiant->name;
+        $success['token'] = $patiant->createToken('home_care')->accessToken;
         return $this->sendRespone($success, 'Tạo tài khoản thành công');
     }
 
