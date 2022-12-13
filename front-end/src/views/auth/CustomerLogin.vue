@@ -131,8 +131,8 @@
     <footer class="footer footer-alt">
       <p class="text-muted">
         Don't have an account?
-        <a href="pages-register-2.html" class="text-muted ml-1"
-          ><b>Sign Up</b></a
+        <router-link :to="{ name: 'user-register' }" class="text-muted ml-1"
+          ><b>Sign Up</b></router-link
         >
       </p>
     </footer>
@@ -165,13 +165,15 @@ export default defineComponent({
         .min(6, "Must be at least 6 characters!")
         .max(40, "Must be maximum 40 characters!"),
     });
+
+    const errors: any = {};
     return {
       user: {
         email: "",
         password: "",
       },
       isPending: false,
-      errors: {},
+      errors,
       schema,
     };
   },

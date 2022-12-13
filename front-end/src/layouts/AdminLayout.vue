@@ -452,7 +452,6 @@
               > -->
               <div
                 class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown"
-                x-placement="bottom-end"
                 :class="{
                   show: dropdownProfile,
                 }"

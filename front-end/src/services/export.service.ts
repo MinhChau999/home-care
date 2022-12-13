@@ -1,7 +1,7 @@
 import exportFromJSON from "export-from-json";
 
-class excelParser {
-  exportDataFromJSON(data: any, newFileName: any, fileExportType: string) {
+class ExcelParser {
+  exportDataFromJSON(data: any, newFileName: any, fileExportType: any) {
     if (!data) return;
     try {
       const fileName = newFileName || "exported-data";
@@ -15,4 +15,4 @@ class excelParser {
   }
 }
 
-export default new excelParser();
+export default new ExcelParser();

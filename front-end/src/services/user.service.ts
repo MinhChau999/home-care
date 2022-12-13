@@ -1,30 +1,11 @@
-import axios from "axios";
-import { Item } from "vue3-easy-data-table";
-import authHeader from "./auth-header";
-
-const API_URL = "http://localhost:8000/api/";
+import BassRequest from "./base-request";
 
 class UserService {
-  getAdminBoard() {
-    return axios.get(API_URL + "user", { headers: authHeader("admin") });
-  }
   getAllUser() {
-    return axios.get(API_URL + "get-all-user", {
-      headers: authHeader("admin"),
-    });
+    return BassRequest.get("/users/get-all-user", "admin");
   }
-  mockClientItems(): Item[] {
-    const mockItems: Item[] = [];
-    for (let i = 1; i < 100 + 1; i += 1) {
-      mockItems.push({
-        name: `name-${i}`,
-        address: `address-${i}`,
-        height: i,
-        weight: i,
-        age: i,
-      });
-    }
-    return mockItems;
+  deleteUser(id: any) {
+    return BassRequest.delete("/users/destroy/" + id, "admin");
   }
 }
 

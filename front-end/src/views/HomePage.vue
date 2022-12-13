@@ -39,9 +39,55 @@
                   <button type="button" class="btn btn-light mb-2 mr-1">
                     Import
                   </button>
-                  <button type="button" class="btn btn-light mb-2">
-                    Export
-                  </button>
+                  <div class="btn-group mb-2">
+                    <button
+                      type="button"
+                      class="btn btn-light dropdown-toggle mr-1"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      @click="showExport = !showExport"
+                      v-click-outside="onClickOutside"
+                    >
+                      Export
+                    </button>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown mt-2"
+                      :class="{ show: showExport }"
+                      aria-labelledby="topbar-userdrop"
+                    >
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="exportData('html')"
+                        >html</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('json')"
+                        href="#"
+                        >json</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('txt')"
+                        href="#"
+                        >txt</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('csv')"
+                        href="#"
+                        >csv</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('xls')"
+                        href="#"
+                        >xls</a
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -136,10 +182,15 @@
 </template>
 
 <script lang="ts">
+import excelParser from "@/services/export.service";
 import type { Header, Item } from "vue3-easy-data-table";
 import { defineComponent } from "vue";
+import vClickOutside from "click-outside-vue3";
 
 export default defineComponent({
+  directives: {
+    clickOutside: vClickOutside.directive,
+  },
   data() {
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
@@ -290,14 +341,23 @@ export default defineComponent({
       itemsSelected,
       loading: false,
       viewItem,
+      showExport: false,
     };
   },
   methods: {
+    onClickOutside() {
+      if (this.showExport == true) {
+        this.showExport = false;
+      }
+    },
     editItem(item: Item[]): void {
       console.log(item);
     },
     deleteItem(item: Item[]) {
       console.log(item);
+    },
+    exportData(type: string) {
+      excelParser.exportDataFromJSON(this.items, "users", type);
     },
   },
 });

@@ -19,8 +19,8 @@ export const authUser = {
     login({ commit }: any, user: any) {
       return AuthService.loginUser(user).then(
         (user) => {
-          commit("loginSuccess", user);
-          return Promise.resolve(user);
+          commit("loginSuccess", user.data);
+          return Promise.resolve(user.data);
         },
         (error) => {
           commit("loginFailure");
@@ -35,8 +35,8 @@ export const authUser = {
     register({ commit }: any, user: any) {
       return AuthService.registerUser(user).then(
         (user) => {
-          commit("registerSuccess");
-          return Promise.resolve(user);
+          commit("registerSuccess", user.data);
+          return Promise.resolve(user.data);
         },
         (error) => {
           commit("registerFailure");
@@ -61,10 +61,14 @@ export const authUser = {
       state.status.loggedIn = false;
       state.user = null;
     },
-    resgisterSuccess(state: { status: { loggedIn: boolean } }) {
+    registerSuccess(
+      state: { status: { loggedIn: boolean }; user: any },
+      user: any
+    ) {
       state.status.loggedIn = true;
+      state.user = user;
     },
-    resgisterFailure(state: { status: { loggedIn: boolean } }) {
+    registerFailure(state: { status: { loggedIn: boolean } }) {
       state.status.loggedIn = false;
     },
   },
@@ -77,8 +81,8 @@ export const authAdmin = {
     login({ commit }: any, admin: any) {
       return AuthService.loginAdmin(admin).then(
         (admin) => {
-          commit("loginSuccess", admin);
-          return Promise.resolve(admin);
+          commit("loginSuccess", admin.data);
+          return Promise.resolve(admin.data);
         },
         (error) => {
           commit("loginFailure");
@@ -93,11 +97,11 @@ export const authAdmin = {
   },
   mutations: {
     loginSuccess(
-      state: { status: { loggedIn: boolean }; user: any },
+      state: { status: { loggedIn: boolean }; admin: any },
       admin: any
     ) {
       state.status.loggedIn = true;
-      state.user = admin;
+      state.admin = admin;
     },
     loginFailure(state: { status: { loggedIn: boolean }; admin: null }) {
       state.status.loggedIn = false;

@@ -93,12 +93,13 @@
   <!-- end .card-body -->
 </template>
 
-<script>
+<script lang="ts">
 import Notification from "@/services/notification.service";
+import { defineComponent } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-export default {
+export default defineComponent({
   components: {
     Form,
     Field,
@@ -117,13 +118,15 @@ export default {
         .min(6, "Must be at least 6 characters!")
         .max(40, "Must be maximum 40 characters!"),
     });
+
+    const errors: any = {};
     return {
       user: {
         email: "",
         password: "",
       },
       isPending: false,
-      errors: {},
+      errors,
       schema,
     };
   },
@@ -146,11 +149,11 @@ export default {
       this.errors = {};
       this.$store
         .dispatch("authAdmin/login", this.user)
-        .then((response) => {
+        .then((response: any) => {
           this.$router.push({ name: "dashboard" });
           Notification.success(response.message);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           Notification.error(error.response.data.data.error);
           this.errors = error.response.data.data;
           console.clear();
@@ -158,5 +161,5 @@ export default {
         });
     },
   },
-};
+});
 </script>

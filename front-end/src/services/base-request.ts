@@ -1,21 +1,26 @@
-const apiUrl = "http://localhost:8000/api/";
+const apiUrl = "http://localhost:8000/api";
 
 import axios from "axios";
 
-export default {
-  getHeaders() {
-    const token = window.localStorage.getItem("token");
-    if (token == null) {
-      return {};
+class BassRequest {
+  authHeader(role = "") {
+    const user = JSON.parse(localStorage.getItem("token" + role) || "[]");
+    if (user && user.token) {
+      return { Authorization: "Bearer " + user.token };
     }
-    return { Authorization: "Bearer " + token };
-  },
+    return {};
+  }
 
-  get(url: string) {
-    return axios.get(apiUrl + url, { headers: this.getHeaders() });
-  },
+  get(url: string, role: any = "") {
+    return axios.get(apiUrl + url, { headers: this.authHeader(role) });
+  }
 
-  post(url: string, data: any) {
-    return axios.post(apiUrl + url, data, { headers: this.getHeaders() });
-  },
-};
+  post(url: string, data: any, role: any = "") {
+    return axios.post(apiUrl + url, data, { headers: this.authHeader(role) });
+  }
+  delete(url: string, role: any = "") {
+    return axios.delete(apiUrl + url, { headers: this.authHeader(role) });
+  }
+}
+
+export default new BassRequest();

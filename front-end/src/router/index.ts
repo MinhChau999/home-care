@@ -29,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/CustomerLogin.vue"),
     name: "user-login",
   },
+
   {
     path: "/register",
     meta: {
@@ -107,6 +108,26 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/AdminLogin.vue"),
     name: "admin-login",
   },
+  // {
+  //   path: "/admin/fogot-password",
+  //   meta: {
+  //     layout: "auth",
+  //   },
+  //   component: () => import("@/views/auth/AdminFogotPassword.vue"),
+  //   name: "admin-fogot",
+  // },
+  // {
+  //   path: "/admin/reset-password",
+  //   meta: {
+  //     layout: "auth",
+  //   },
+  //   component: () => import("@/views/auth/AdminResetPassword.vue"),
+  //   name: "admin-reset-password",
+  // },
+
+  /**
+   * Error PageNotFound
+   */
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",

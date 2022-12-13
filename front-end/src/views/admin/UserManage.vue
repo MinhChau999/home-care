@@ -39,9 +39,55 @@
                   <button type="button" class="btn btn-light mb-2 mr-1">
                     Import
                   </button>
-                  <button type="button" class="btn btn-light mb-2">
-                    Export
-                  </button>
+                  <div class="btn-group mb-2">
+                    <button
+                      type="button"
+                      class="btn btn-light dropdown-toggle mr-1"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      @click="showExport = !showExport"
+                      v-click-outside="onClickOutside"
+                    >
+                      Export
+                    </button>
+                    <div
+                      class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown mt-2"
+                      :class="{ show: showExport }"
+                      aria-labelledby="topbar-userdrop"
+                    >
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        @click="exportData('html')"
+                        >html</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('json')"
+                        href="#"
+                        >json</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('txt')"
+                        href="#"
+                        >txt</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('csv')"
+                        href="#"
+                        >csv</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        @click="exportData('xls')"
+                        href="#"
+                        >xls</a
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -290,8 +336,14 @@
 import type { Header, Item } from "vue3-easy-data-table";
 import { defineComponent } from "vue";
 import UserService from "@/services/user.service";
+import ExcelParser from "@/services/export.service";
+import Notification from "@/services/notification.service";
+import vClickOutside from "click-outside-vue3";
 
 export default defineComponent({
+  directives: {
+    clickOutside: vClickOutside.directive,
+  },
   data() {
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
@@ -326,6 +378,7 @@ export default defineComponent({
       linkLimitPage: 5,
       from,
       to,
+      showExport: false,
     };
   },
   async mounted() {
@@ -376,14 +429,19 @@ export default defineComponent({
   methods: {
     getUser() {
       this.loading = true;
-      UserService.getAllUser().then((response: any) => {
-        this.items = response.data;
-        for (var i in this.items) {
-          this.items[i].gender = this.items[i].gender == 0 ? "Nam" : "Nữ";
-        }
-        this.itemsSelected = [];
-        this.loading = false;
-      });
+      UserService.getAllUser()
+        .then((response: any) => {
+          this.items = response.data;
+          for (var i in this.items) {
+            this.items[i].gender = this.items[i].gender == 0 ? "Nam" : "Nữ";
+          }
+          this.itemsSelected = [];
+          this.loading = false;
+        })
+        .catch(() => {
+          this.items = [];
+          this.loading = false;
+        });
     },
     updateRowsPerPageSelect(e: Event): void {
       (this.$refs.dataTable as any).updateRowsPerPageActiveOption(
@@ -426,12 +484,40 @@ export default defineComponent({
     },
     viewItem(item: Item[]): void {
       console.log(item);
+      console.log(this.$store.state.authAdmin.admin);
+    },
+    onClickOutside() {
+      if (this.showExport == true) {
+        this.showExport = false;
+      }
+    },
+    exportData(type: string) {
+      ExcelParser.exportDataFromJSON(this.items, "users", type);
     },
     editItem(item: Item[]): void {
       console.log(item);
     },
-    deleteItem(item: Item[]) {
-      console.log(item);
+    deleteItem(val: any) {
+      if (confirm("Do you really want to delete?")) {
+        const id: any = this.$store.state.authAdmin.admin.id;
+        const role: any = this.$store.state.authAdmin.admin.role;
+        if (id == val.id) {
+          Notification.error("Xóa thất bại");
+          return false;
+        }
+        if (role != 0) {
+          Notification.error("Xóa thất bại");
+          return false;
+        }
+        this.items = this.items.filter((item) => item.id !== val.id);
+        UserService.deleteUser(val.id)
+          .then((response: any) => {
+            console.log(response.data.message);
+          })
+          .catch(() => {
+            Notification.error("Xóa thất bại");
+          });
+      }
     },
   },
 });

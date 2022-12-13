@@ -1,36 +1,28 @@
-import axios from "axios";
-const API_URL = "http://localhost:8000/api/";
+import BassRequest from "./base-request";
 
 class AuthService {
   loginUser(user: any) {
-    return axios
-      .post(API_URL + "login", {
-        email: user.email,
-        password: user.password,
-      })
-      .then((response) => {
-        if (response.data.data.token) {
-          localStorage.setItem("token", JSON.stringify(response.data.data));
-        }
-        return response.data;
-      });
+    return BassRequest.post("/login", {
+      email: user.email,
+      password: user.password,
+    }).then((response) => {
+      if (response.data.data.token) {
+        localStorage.setItem("token", JSON.stringify(response.data.data));
+      }
+      return response;
+    });
   }
 
   loginAdmin(user: any) {
-    return axios
-      .post(API_URL + "admin/login", {
-        email: user.email,
-        password: user.password,
-      })
-      .then((response) => {
-        if (response.data.data.token) {
-          localStorage.setItem(
-            "tokenadmin",
-            JSON.stringify(response.data.data)
-          );
-        }
-        return response.data;
-      });
+    return BassRequest.post("/admin/login", {
+      email: user.email,
+      password: user.password,
+    }).then((response) => {
+      if (response.data.data.token) {
+        localStorage.setItem("tokenadmin", JSON.stringify(response.data.data));
+      }
+      return response;
+    });
   }
 
   logoutUser() {
@@ -42,18 +34,16 @@ class AuthService {
   }
 
   registerUser(user: any) {
-    return axios
-      .post(API_URL + "register", {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-      })
-      .then((response) => {
-        if (response.data.data.token) {
-          localStorage.setItem("token", JSON.stringify(response.data.data));
-        }
-        return response.data;
-      });
+    return BassRequest.post("/register", {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }).then((response) => {
+      if (response.data.data.token) {
+        localStorage.setItem("token", JSON.stringify(response.data.data));
+      }
+      return response;
+    });
   }
 }
 

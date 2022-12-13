@@ -155,18 +155,21 @@
     <footer class="footer footer-alt">
       <p class="text-muted">
         Already have account?
-        <a href="pages-login-2.html" class="text-muted ml-1"><b>Log In</b></a>
+        <router-link :to="{ name: 'user-login' }" class="text-muted ml-1"
+          ><b>Log in</b></router-link
+        >
       </p>
     </footer>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Notification from "@/services/notification.service";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: {
     Form,
     Field,
@@ -190,6 +193,7 @@ export default {
         .min(6, "Must be at least 6 characters!")
         .max(40, "Must be maximum 40 characters!"),
     });
+    const errors: any = {};
     return {
       user: {
         name: "",
@@ -197,7 +201,7 @@ export default {
         password: "",
       },
       isPending: false,
-      errors: {},
+      errors,
       schema,
     };
   },
@@ -220,16 +224,16 @@ export default {
       this.errors = {};
       this.$store
         .dispatch("authUser/register", this.user)
-        .then((response) => {
+        .then((response: any) => {
           this.$router.push({ name: "landing-page" });
           Notification.success(response.message);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           Notification.error(error.response.data.message);
           this.errors = error.response.data.errors;
           this.isPending = false;
         });
     },
   },
-};
+});
 </script>

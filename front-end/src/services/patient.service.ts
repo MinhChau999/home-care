@@ -1,15 +1,12 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-
-const API_URL = "http://localhost:8000/api/";
+import BassRequest from "./base-request";
 
 class UserService {
   getPublicContent() {
-    return axios.get(API_URL + "all");
+    return BassRequest.get("/all");
   }
 
   getUserBoard() {
-    return axios.get(API_URL + "user", { headers: authHeader() });
+    return BassRequest.get("/user");
   }
 }
 
