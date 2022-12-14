@@ -108,22 +108,39 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/AdminLogin.vue"),
     name: "admin-login",
   },
-  // {
-  //   path: "/admin/fogot-password",
-  //   meta: {
-  //     layout: "auth",
-  //   },
-  //   component: () => import("@/views/auth/AdminFogotPassword.vue"),
-  //   name: "admin-fogot",
-  // },
-  // {
-  //   path: "/admin/reset-password",
-  //   meta: {
-  //     layout: "auth",
-  //   },
-  //   component: () => import("@/views/auth/AdminResetPassword.vue"),
-  //   name: "admin-reset-password",
-  // },
+  {
+    path: "/admin/fogot-password",
+    meta: {
+      layout: "auth",
+    },
+    component: () => import("@/views/auth/AdminFogotPassword.vue"),
+    name: "admin-fogot",
+  },
+  {
+    path: "/admin/reset-password",
+    meta: {
+      layout: "auth",
+    },
+    component: () => import("@/views/auth/AdminResetPassword.vue"),
+    name: "admin-reset-password",
+  },
+  {
+    path: "/admin/page-confirm-password/:email",
+    props: true,
+    meta: {
+      layout: "auth",
+    },
+    component: () => import("@/views/auth/PageConfirmMail.vue"),
+    name: "page-confirm-password",
+  },
+  {
+    path: "/admin/page-success-password",
+    meta: {
+      layout: "auth",
+    },
+    component: () => import("@/views/auth/ChangePassSuccess.vue"),
+    name: "page-success-password",
+  },
 
   /**
    * Error PageNotFound

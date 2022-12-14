@@ -1,5 +1,5 @@
 <template>
-  <div class="card-body">
+  <div class="customer-login">
     <!-- Logo -->
     <!-- <div class="auth-brand text-center text-lg-left">
       <a href="index.html" class="logo-dark">

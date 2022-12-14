@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-login">
+  <div class="admin-fogot">
     <!-- Logo -->
     <!-- <div class="auth-brand text-center text-lg-left">
       <a href="index.html" class="logo-light">
@@ -8,13 +8,14 @@
     </div> -->
 
     <!-- title-->
-    <h3 class="mt-0">Sign In for Admin</h3>
-    <div class="text-muted mb-4">
-      Enter your email address and password to access account.
-    </div>
+    <h4 class="mt-0">Reset Password</h4>
+    <p class="text-muted mb-4">
+      Enter your email address and we'll send you an email with instructions to
+      reset your password.
+    </p>
 
     <!-- form -->
-    <Form @submit="login" :validation-schema="schema">
+    <Form @submit="fogotPassword" :validation-schema="schema">
       <div class="form-group">
         <label for="emailaddress">Email address</label>
         <Field name="email" v-slot="{ field, errors, meta }">
@@ -36,49 +37,9 @@
         </div>
         <ErrorMessage name="email" class="invalid-feedback mt-1" />
       </div>
-      <div class="form-group">
-        <router-link
-          :to="{ name: 'admin-fogot' }"
-          class="text-muted float-right"
-          ><small>Forgot your password?</small></router-link
-        >
-        <label for="password">Password</label>
-        <Field name="password" v-slot="{ field, errors }">
-          <input
-            v-bind="field"
-            v-model="user.password"
-            class="form-control"
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            :class="{
-              'is-invalid': !!errors.length || errors.password,
-            }"
-          />
-        </Field>
-        <div v-if="errors.password" class="invalid-feedback">
-          {{ errors.password }}
-        </div>
-        <ErrorMessage name="password" class="invalid-feedback mt-1" />
-      </div>
-      <!-- <div class="form-group mb-3">
-        <div class="custom-control custom-checkbox">
-          <input
-            type="checkbox"
-            class="custom-control-input"
-            id="checkbox-signin"
-          />
-          <label class="custom-control-label" for="checkbox-signin"
-            >Remember me</label
-          >
-        </div>
-      </div> -->
-      <div v-if="errors.error" class="invalid-feedback mb-2">
-        {{ errors.error }}
-      </div>
       <div class="form-group mb-0 text-center">
         <button class="btn btn-primary btn-block" type="submit">
-          <i class="mdi mdi-login"></i> Log In
+          <i class="mdi mdi-lock-reset"></i> Reset Password
         </button>
       </div>
       <!-- pending -->
@@ -91,15 +52,25 @@
       <!-- end pending  -->
     </Form>
     <!-- end form-->
+    <!-- Footer-->
+    <footer class="footer footer-alt">
+      <p class="text-muted">
+        Back to Log in
+        <router-link :to="{ name: 'admin-login' }" class="text-muted ml-1"
+          ><b>Login For Admin</b></router-link
+        >
+      </p>
+    </footer>
   </div>
   <!-- end .card-body -->
 </template>
 
 <script lang="ts">
-import Notification from "@/services/notification.service";
 import { defineComponent } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import UserService from "@/services/user.service";
+import Notification from "@/services/notification.service";
 
 export default defineComponent({
   components: {
@@ -108,24 +79,17 @@ export default defineComponent({
     ErrorMessage,
   },
   data() {
+    const errors: any = {};
     const schema = yup.object().shape({
       email: yup
         .string()
         .required("Email is required!")
         .email("Email is invalid!")
         .max(50, "Must be maximum 50 characters!"),
-      password: yup
-        .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
     });
-
-    const errors: any = {};
     return {
       user: {
         email: "",
-        password: "",
       },
       isPending: false,
       errors,
@@ -146,19 +110,26 @@ export default defineComponent({
   },
 
   methods: {
-    login() {
+    fogotPassword() {
       this.isPending = true;
       this.errors = {};
-      this.$store
-        .dispatch("authAdmin/login", this.user)
-        .then((response: any) => {
-          this.$router.push({ name: "dashboard" });
-          Notification.success(response.message);
+      UserService.fogotPassword(this.user)
+        .then((respone) => {
+          this.isPending = false;
+          if (respone.data.success) {
+            Notification.success(respone.data.message);
+            this.$router.push({
+              name: "page-confirm-password",
+              params: { email: this.user.email },
+            });
+          }
         })
-        .catch((error: any) => {
-          Notification.error(error.response.data.data.error);
-          this.errors = error.response.data.data;
-          console.clear();
+        .catch((error) => {
+          if (error.code == "ERR_NETWORK") {
+            Notification.error("Kết nối thất bại");
+          } else {
+            Notification.error(error.response.data.message);
+          }
           this.isPending = false;
         });
     },

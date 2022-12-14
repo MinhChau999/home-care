@@ -4,9 +4,18 @@
       <!--Auth fluid left content -->
       <div class="auth-fluid-form-box">
         <div class="align-items-center d-flex h-100">
-          <!-- start card-body -->
-          <slot />
-          <!-- end .card-body -->
+          <div class="card-body">
+            <!-- start card-body -->
+            <div class="auth-brand text-center text-lg-left">
+              <router-link :to="{ name: 'landing-page' }" class="logo-dark">
+                <span
+                  ><img src="@/assets/images/logo-dark.png" alt="" height="18"
+                /></span>
+              </router-link>
+            </div>
+            <slot />
+            <!-- end .card-body -->
+          </div>
         </div>
         <!-- end .align-items-center.d-flex.h-100-->
       </div>

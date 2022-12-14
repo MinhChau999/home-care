@@ -6,14 +6,24 @@ use App\Enums\UserRoleEnum;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ResetPasswordUserRequest;
+use App\Models\PasswordReset;
 use App\Models\User;
+use App\Notifications\ResetPasswordUserEmail;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ApiUserController extends BaseController
 {
+
+    const VALID_TOKEN = 60; // 60 minutes
+
     public function register(RegisterUserRequest $request)
     {
         $input = $request->all();
@@ -46,18 +56,58 @@ class ApiUserController extends BaseController
         }
     }
 
-    public function resetPassword()
+    public function sendMail(ResetPasswordUserRequest $request)
     {
-        $mailData = [
-            'name' => "HelloWorld",
-            'dob' => "12/12/2000",
-        ];
-        
-        Mail::send('email.resetPassword', compact('mailData'), function ($email) use ($mailData) {
-            $email->subject('Test email');
-            $email->to('chaudai621@gmail.com', $mailData['name']);
-        });
-        dd("Mail sent successfully");
+        try {
+            $user = User::where('email', $request->email)->first();
+            $passwordReset = PasswordReset::updateOrCreate([
+                'email' => $user->email,
+            ], [
+                'token' => Str::random(60),
+            ]);
+
+            // $passwordReset = PasswordReset::broker('users')->firstOrNew([
+            //     'email' =>  request('email'), 
+            //     'token' => Str::random(60),
+            // ]);
+            // Giới hạn số lần reset password
+            // if (Carbon::parse($passwordReset->created_at)->addDay()->isPast()) {
+            //     return $this->sendError('Thất bại', ['error' => 'something went wrong!']);
+            // }
+
+            if ($passwordReset) {
+                $user->notify(new ResetPasswordUserEmail($passwordReset->token));
+            }
+
+            return $this->sendRespone(null, 'We have e - mailed your password reset link!');
+        } catch (Exception $exception) {
+            return $this->sendError('Thất bại', ['error' => 'something went wrong!']);
+        }
+    }
+
+    public function resetPassword(Request $request, $token)
+    {
+        $passwordReset = PasswordReset::where('token', $token)->first();
+
+        if (!$passwordReset) {
+            return response()->json([
+                'message' => __('The token is invalid.')
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::VALID_TOKEN)->isPast()) {
+            $passwordReset->delete();
+            return response()->json([
+                'message' => 'The token is invalid.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user = User::where('email', $passwordReset->email)->firstOrFail();
+        $user->password = Hash::make($request->get('newPassword'));
+        $user->save();
+        $passwordReset->delete();
+
+        return $this->sendRespone(null, 'change password success, please login!');
     }
 
     public function getAllUSer()

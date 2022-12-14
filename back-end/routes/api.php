@@ -19,8 +19,10 @@ use Illuminate\Support\Facades\Route;
 /**
  * Start API for ADMIN
  */
-Route::post('/admin/register', [ApiUserController::class, 'register'])->name('registerAdmin');
-Route::post('/admin/login', [ApiUserController::class, 'login'])->name('loginAdmin');
+Route::post('/users/register', [ApiUserController::class, 'register'])->name('registerAdmin');
+Route::post('/users/login', [ApiUserController::class, 'login'])->name('loginAdmin');
+Route::post('/users/reset-password', [ApiUserController::class, 'sendMail'])->name('sendMail');
+Route::post('/users/reset-password/{token}', [ApiUserController::class, 'resetPassword'])->name('resetPassword');
 
 Route::group([
    'as' => 'users.',

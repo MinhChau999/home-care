@@ -14,7 +14,7 @@ class AuthService {
   }
 
   loginAdmin(user: any) {
-    return BassRequest.post("/admin/login", {
+    return BassRequest.post("/users/login", {
       email: user.email,
       password: user.password,
     }).then((response) => {
