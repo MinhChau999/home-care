@@ -27,9 +27,13 @@ Route::post('/users/reset-password/{token}', [ApiUserController::class, 'resetPa
 Route::group([
    'as' => 'users.',
    'prefix' => 'users',
-   'middleware' => 'role:admin',
+   // 'middleware' => 'role:admin',
 ], function () {
+   // Get data from user
    Route::get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
+   
+   // CRUD
+   Route::post('/store', [ApiUserController::class, 'store'])->name('store');
    Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
 });
 

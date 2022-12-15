@@ -431,12 +431,13 @@ export default defineComponent({
       this.loading = true;
       UserService.getAllUser()
         .then((response: any) => {
-          this.items = response.data;
+          this.items = response.data.data;
           for (var i in this.items) {
             this.items[i].gender = this.items[i].gender == 0 ? "Nam" : "Nữ";
           }
           this.itemsSelected = [];
           this.loading = false;
+          Notification.success(response.data.message);
         })
         .catch(() => {
           this.items = [];

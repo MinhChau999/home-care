@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ResetPasswordUserRequest;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Notifications\ResetPasswordUserEmail;
@@ -15,8 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ApiUserController extends BaseController
@@ -52,7 +51,7 @@ class ApiUserController extends BaseController
             $success['token'] = $user->createToken('home_care')->accessToken;
             return $this->sendRespone($success, 'Đăng nhập thành công');
         } else {
-            return $this->sendError('Thất bại', ['error' => 'Sai tên tài khoản hoặc mật khẩu']);
+            return $this->sendError('Sai tên tài khoản hoặc mật khẩu');
         }
     }
 
@@ -79,9 +78,9 @@ class ApiUserController extends BaseController
                 $user->notify(new ResetPasswordUserEmail($passwordReset->token));
             }
 
-            return $this->sendRespone(null, 'We have e - mailed your password reset link!');
-        } catch (Exception $exception) {
-            return $this->sendError('Thất bại', ['error' => 'something went wrong!']);
+            return $this->sendRespone(null, 'We have e-mailed your password reset link!');
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong!', $e->getMessage());
         }
     }
 
@@ -90,16 +89,12 @@ class ApiUserController extends BaseController
         $passwordReset = PasswordReset::where('token', $token)->first();
 
         if (!$passwordReset) {
-            return response()->json([
-                'message' => __('The token is invalid.')
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::VALID_TOKEN)->isPast()) {
             $passwordReset->delete();
-            return response()->json([
-                'message' => 'The token is invalid.',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::where('email', $passwordReset->email)->firstOrFail();
@@ -117,26 +112,57 @@ class ApiUserController extends BaseController
         foreach ($users as &$user) {
             $user["role"] = UserRoleEnum::from($user["role"])->name;
         }
-        return response()->json($users);
+        return $this->sendRespone($users, "Kết nối thành công");
+    }
+
+    /**
+     * Add the specified resource from storage.
+     *
+     * @param  \App\Models\User  $users
+     * @return \Illuminate\Http\Response
+     */
+
+    public function store(StoreUserRequest $request)
+    {
+        try {
+            $arr = $request->only([
+                "name",
+                "email",
+                "avatar",
+                "phone",
+                "address",
+                "gender",
+                "birthday",
+                "role",
+            ]);
+            $arr['password'] = Hash::make('123123');
+            $user = new User();
+            $user->fill($arr);
+            $user->save();
+            // UserCreateEvent::dispatch($user);
+            return $this->sendRespone(null, "Tạo tài khoản thành công");
+        } catch (Exception $e) {
+            return $this->sendError('Tạo tài khoản thất bại', $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $buses
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
     {
         $userLogged = auth('api-admin')->user();
         if ($userLogged->id == $user->id) {
-            return $this->sendError('Thất bại', ['error' => 'Xóa thất bại']);
+            return $this->sendError('Xóa thất bại');
         }
         try {
             $user->delete();
             return $this->sendRespone(null, 'Xóa thành công');
-        } catch (\Exception $e) {
-            return $this->sendError('Thất bại', ['error' => 'Xóa thất bại']);
+        } catch (Exception $e) {
+            return $this->sendError('Xóa thất bại', $e->getMessage());
         }
     }
 }
