@@ -51,7 +51,7 @@ export const authUser = {
       user: any
     ) {
       state.status.loggedIn = true;
-      state.user = user;
+      state.user = user.data;
     },
     loginFailure(state: { status: { loggedIn: boolean }; user: null }) {
       state.status.loggedIn = false;
@@ -66,7 +66,7 @@ export const authUser = {
       user: any
     ) {
       state.status.loggedIn = true;
-      state.user = user;
+      state.user = user.data;
     },
     registerFailure(state: { status: { loggedIn: boolean } }) {
       state.status.loggedIn = false;
@@ -101,7 +101,7 @@ export const authAdmin = {
       admin: any
     ) {
       state.status.loggedIn = true;
-      state.admin = admin;
+      state.admin = admin.data;
     },
     loginFailure(state: { status: { loggedIn: boolean }; admin: null }) {
       state.status.loggedIn = false;

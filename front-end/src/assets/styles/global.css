@@ -6387,6 +6387,7 @@ a.close.disabled {
   height: 100%;
   overflow: hidden;
   outline: 0;
+  background: rgb(25 31 51 / 27%);
 }
 
 .modal-dialog {
@@ -18893,6 +18894,9 @@ body[data-leftbar-theme="dark"] .side-nav .side-nav-forth-level li.active > a {
 }
 
 /* Tùy chỉnh thêm */
+.text-red{
+  color: red;
+}
 
 .action-icon {
   color: #98a6ad;

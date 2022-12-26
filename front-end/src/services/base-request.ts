@@ -18,6 +18,11 @@ class BassRequest {
   post(url: string, data: any, role: any = "") {
     return axios.post(apiUrl + url, data, { headers: this.authHeader(role) });
   }
+
+  put(url: string, data: any, role: any = "") {
+    return axios.put(apiUrl + url, data, { headers: this.authHeader(role) });
+  }
+
   delete(url: string, role: any = "") {
     return axios.delete(apiUrl + url, { headers: this.authHeader(role) });
   }

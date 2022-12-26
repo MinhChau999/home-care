@@ -1,175 +1,93 @@
 <template>
-  <div class="content">
-    <!-- start page title -->
+  <div class="user-profile">
     <div class="row">
-      <div class="col-12">
-        <div class="page-title-box">
-          <div class="page-title-right">
-            <ol class="breadcrumb m-0">
-              <li class="breadcrumb-item">
-                <a href="javascript: void(0);">Hyper</a>
-              </li>
-              <li class="breadcrumb-item">
-                <a href="javascript: void(0);">Pages</a>
-              </li>
-              <li class="breadcrumb-item active">Profile</li>
-            </ol>
-          </div>
-          <h4 class="page-title">Profile</h4>
-        </div>
-      </div>
-    </div>
-    <!-- end page title -->
-
-    <div class="row">
-      <div class="col-sm-12">
-        <!-- Profile -->
-        <div class="card bg-primary">
-          <div class="card-body profile-user-box">
-            <div class="row">
-              <div class="col-sm-8">
-                <div class="media">
-                  <span class="float-left m-2 mr-4"
-                    ><img
-                      src="@/assets/images/users/avatar-2.jpg"
-                      style="height: 100px"
-                      alt=""
-                      class="rounded-circle img-thumbnail"
-                  /></span>
-                  <div class="media-body">
-                    <h4 class="mt-1 mb-1 text-white">Michael Franklin</h4>
-                    <p class="font-13 text-white-50">Authorised Brand Seller</p>
-
-                    <ul class="mb-0 list-inline text-light">
-                      <li class="list-inline-item mr-3">
-                        <h5 class="mb-1">$ 25,184</h5>
-                        <p class="mb-0 font-13 text-white-50">Total Revenue</p>
-                      </li>
-                      <li class="list-inline-item">
-                        <h5 class="mb-1">5482</h5>
-                        <p class="mb-0 font-13 text-white-50">
-                          Number of Orders
-                        </p>
-                      </li>
-                    </ul>
-                  </div>
-                  <!-- end media-body-->
-                </div>
-              </div>
-              <!-- end col-->
-
-              <div class="col-sm-4">
-                <div class="text-center mt-sm-0 mt-3 text-sm-right">
-                  <button type="button" class="btn btn-light">
-                    <i class="mdi mdi-account-edit mr-1"></i> Edit Profile
-                  </button>
-                </div>
-              </div>
-              <!-- end col-->
-            </div>
-            <!-- end row -->
-          </div>
-          <!-- end card-body/ profile-user-box-->
-        </div>
-        <!--end profile/ card -->
-      </div>
-      <!-- end col-->
-    </div>
-    <!-- end row -->
-
-    <div class="row">
-      <div class="col-lg-4">
-        <!-- Personal-Information -->
-        <div class="card">
+      <div class="col-xl-4 col-lg-5">
+        <div class="card text-center">
           <div class="card-body">
-            <h4 class="header-title mt-0 mb-3">Seller Information</h4>
-            <p class="text-muted font-13">
-              Hye, I’m Michael Franklin residing in this beautiful world. I
-              create websites and mobile apps with great UX and UI design. I
-              have done work with big companies like Nokia, Google and Yahoo.
-              Meet me or Contact me for any queries. One Extra line for filling
-              space. Fill as many you want.
-            </p>
+            <img
+              v-if="!user.avatar"
+              src="@/assets/images/users/avatar-1.jpg"
+              class="rounded-circle avatar-lg img-thumbnail"
+              alt="profile-image"
+            />
+            <img
+              v-else
+              :src="user.avatar"
+              class="rounded-circle avatar-lg img-thumbnail"
+            />
 
-            <hr />
+            <h4 class="mb-0 mt-2">{{ user.name }}</h4>
+            <p class="text-muted font-14">{{ user.roleName }}</p>
 
-            <div class="text-left">
-              <p class="text-muted">
+            <div class="form-group mb-0 mt-2 text-center">
+              <div
+                :class="{ 'spinner-border text-primary': loadingUser }"
+                role="status"
+              ></div>
+            </div>
+
+            <div class="text-left mt-3">
+              <h4 class="font-13 text-uppercase">About Me :</h4>
+              <p class="text-muted mb-2 font-13">
                 <strong>Full Name :</strong>
-                <span class="ml-2">Michael A. Franklin</span>
+                <span class="ml-2">{{ user.name }}</span>
               </p>
 
-              <p class="text-muted">
+              <p class="text-muted mb-2 font-13">
                 <strong>Mobile :</strong
-                ><span class="ml-2">(+12) 123 1234 567</span>
+                ><span class="ml-2">{{ user.phone }}</span>
               </p>
 
-              <p class="text-muted">
+              <p class="text-muted mb-2 font-13">
                 <strong>Email :</strong>
-                <span class="ml-2">coderthemes@gmail.com</span>
+                <span class="ml-2">{{ user.email }}</span>
               </p>
 
-              <p class="text-muted">
-                <strong>Location :</strong> <span class="ml-2">USA</span>
+              <p class="text-muted mb-1 font-13">
+                <strong>Address :</strong>
+                <span class="ml-2">{{ user.address }}</span>
               </p>
+            </div>
 
-              <p class="text-muted">
-                <strong>Languages :</strong>
-                <span class="ml-2"> English, German, Spanish </span>
-              </p>
-              <p class="text-muted mb-0">
-                <strong>Elsewhere :</strong>
+            <ul class="social-list list-inline mt-3 mb-0">
+              <li class="list-inline-item">
                 <a
-                  class="d-inline-block ml-2 text-muted"
-                  title=""
-                  data-placement="top"
-                  data-toggle="tooltip"
-                  href=""
-                  data-original-title="Facebook"
+                  href="javascript: void(0);"
+                  class="social-list-item border-primary text-primary"
                   ><i class="mdi mdi-facebook"></i
                 ></a>
+              </li>
+              <li class="list-inline-item">
                 <a
-                  class="d-inline-block ml-2 text-muted"
-                  title=""
-                  data-placement="top"
-                  data-toggle="tooltip"
-                  href=""
-                  data-original-title="Twitter"
+                  href="javascript: void(0);"
+                  class="social-list-item border-danger text-danger"
+                  ><i class="mdi mdi-google"></i
+                ></a>
+              </li>
+              <li class="list-inline-item">
+                <a
+                  href="javascript: void(0);"
+                  class="social-list-item border-info text-info"
                   ><i class="mdi mdi-twitter"></i
                 ></a>
+              </li>
+              <li class="list-inline-item">
                 <a
-                  class="d-inline-block ml-2 text-muted"
-                  title=""
-                  data-placement="top"
-                  data-toggle="tooltip"
-                  href=""
-                  data-original-title="Skype"
-                  ><i class="mdi mdi-skype"></i
+                  href="javascript: void(0);"
+                  class="social-list-item border-secondary text-secondary"
+                  ><i class="mdi mdi-github-circle"></i
                 ></a>
-              </p>
-            </div>
+              </li>
+            </ul>
           </div>
+          <!-- end card-body -->
         </div>
-        <!-- Personal-Information -->
+        <!-- end card -->
 
-        <!-- Toll free number box-->
-        <div class="card text-white bg-info overflow-hidden">
-          <div class="card-body">
-            <div class="toll-free-box text-center">
-              <h4>
-                <i class="mdi mdi-deskphone"></i> Toll Free : 1-234-567-8901
-              </h4>
-            </div>
-          </div>
-          <!-- end card-body-->
-        </div>
-        <!-- end card-->
-        <!-- End Toll free number box-->
-
-        <!-- Messages-->
+        <!-- Notification-->
         <div class="card">
           <div class="card-body">
-            <h4 class="header-title mb-3">Messages</h4>
+            <h4 class="header-title mb-3">Notification</h4>
 
             <div class="inbox-widget">
               <div class="inbox-item">
@@ -262,150 +180,116 @@
       </div>
       <!-- end col-->
 
-      <div class="col-lg-8">
-        <!-- Chart-->
+      <div class="col-xl-8 col-lg-7">
         <div class="card">
           <div class="card-body">
-            <h4 class="header-title mb-3">Orders &amp; Revenue</h4>
-            <div style="height: 260px" class="chartjs-chart">
-              <div class="chartjs-size-monitor">
-                <div class="chartjs-size-monitor-expand">
-                  <div class=""></div>
-                </div>
-                <div class="chartjs-size-monitor-shrink">
-                  <div class=""></div>
-                </div>
-              </div>
-              <div class="chartjs-size-monitor">
-                <div class="chartjs-size-monitor-expand">
-                  <div class=""></div>
-                </div>
-                <div class="chartjs-size-monitor-shrink">
-                  <div class=""></div>
-                </div>
-              </div>
-              <canvas
-                id="high-performing-product"
-                width="585"
-                height="325"
-                style="display: block; height: 260px; width: 468px"
-                class="chartjs-render-monitor"
-              ></canvas>
+            <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+              <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
+                <a
+                  href="#"
+                  data-toggle="tab"
+                  aria-expanded="false"
+                  class="nav-link rounded-0"
+                  @click="activeTab = index"
+                  :class="{ active: activeTab === index }"
+                >
+                  {{ tab.label }}
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <template v-for="(tab, index) in tabs">
+                <component
+                  :key="index"
+                  v-model="user"
+                  :is="tab.component"
+                  v-if="index === activeTab"
+                />
+              </template>
+              <!-- end settings content-->
             </div>
+            <!-- end tab-content -->
           </div>
+          <!-- end card body -->
         </div>
-        <!-- End Chart-->
-
-        <div class="row">
-          <div class="col-sm-4">
-            <div class="card tilebox-one">
-              <div class="card-body">
-                <i class="dripicons-basket float-right text-muted"></i>
-                <h6 class="text-muted text-uppercase mt-0">Orders</h6>
-                <h2 class="m-b-20">1,587</h2>
-                <span class="badge badge-primary"> +11% </span>
-                <span class="text-muted">From previous period</span>
-              </div>
-              <!-- end card-body-->
-            </div>
-            <!--end card-->
-          </div>
-          <!-- end col -->
-
-          <div class="col-sm-4">
-            <div class="card tilebox-one">
-              <div class="card-body">
-                <i class="dripicons-box float-right text-muted"></i>
-                <h6 class="text-muted text-uppercase mt-0">Revenue</h6>
-                <h2 class="m-b-20">$<span>46,782</span></h2>
-                <span class="badge badge-danger"> -29% </span>
-                <span class="text-muted">From previous period</span>
-              </div>
-              <!-- end card-body-->
-            </div>
-            <!--end card-->
-          </div>
-          <!-- end col -->
-
-          <div class="col-sm-4">
-            <div class="card tilebox-one">
-              <div class="card-body">
-                <i class="dripicons-jewel float-right text-muted"></i>
-                <h6 class="text-muted text-uppercase mt-0">Product Sold</h6>
-                <h2 class="m-b-20">1,890</h2>
-                <span class="badge badge-primary"> +89% </span>
-                <span class="text-muted">Last year</span>
-              </div>
-              <!-- end card-body-->
-            </div>
-            <!--end card-->
-          </div>
-          <!-- end col -->
-        </div>
-        <!-- end row -->
-
-        <div class="card">
-          <div class="card-body">
-            <h4 class="header-title mb-3">My Products</h4>
-
-            <div class="table-responsive">
-              <table class="table table-hover table-centered mb-0">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ASOS Ridley High Waist</td>
-                    <td>$79.49</td>
-                    <td><span class="badge badge-primary">82 Pcs</span></td>
-                    <td>$6,518.18</td>
-                  </tr>
-                  <tr>
-                    <td>Marco Lightweight Shirt</td>
-                    <td>$128.50</td>
-                    <td><span class="badge badge-primary">37 Pcs</span></td>
-                    <td>$4,754.50</td>
-                  </tr>
-                  <tr>
-                    <td>Half Sleeve Shirt</td>
-                    <td>$39.99</td>
-                    <td><span class="badge badge-primary">64 Pcs</span></td>
-                    <td>$2,559.36</td>
-                  </tr>
-                  <tr>
-                    <td>Lightweight Jacket</td>
-                    <td>$20.00</td>
-                    <td><span class="badge badge-primary">184 Pcs</span></td>
-                    <td>$3,680.00</td>
-                  </tr>
-                  <tr>
-                    <td>Marco Shoes</td>
-                    <td>$28.49</td>
-                    <td><span class="badge badge-primary">69 Pcs</span></td>
-                    <td>$1,965.81</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- end table responsive-->
-          </div>
-          <!-- end col-->
-        </div>
-        <!-- end row-->
+        <!-- end card -->
       </div>
       <!-- end col -->
     </div>
-    <!-- end row -->
+    <!-- end row-->
   </div>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+import { defineComponent } from "vue";
+import { shallowRef } from "vue";
+import UserService from "@/services/user.service";
+// import tab
+import AboutmeTab from "@/views/admin/tabs/AboutmeTab.vue";
+import SettingTab from "@/views/admin/tabs/SettingTab.vue";
+import WorkingTab from "@/views/admin/tabs/WorkingTab.vue";
+export default defineComponent({
+  components: {
+    AboutmeTab,
+    SettingTab,
+    WorkingTab,
+  },
+  data() {
+    return {
+      user: {
+        address: "",
+        avatar: "",
+        birthday: "",
+        created_at: "",
+        email: "",
+        email_verified_at: "",
+        gender: "",
+        id: "",
+        name: "",
+        phone: "",
+        role: "",
+        roleName: "",
+        updated_at: "",
+      },
+      loadingUser: false,
+      activeTab: 1,
+      tabs: [
+        { label: "About", component: shallowRef(AboutmeTab) },
+        { label: "Working", component: shallowRef(WorkingTab) },
+        { label: "Setting", component: shallowRef(SettingTab) },
+      ],
+    };
+  },
+  async mounted() {
+    await this.getUser();
+  },
+  methods: {
+    getUser() {
+      this.loadingUser = true;
+      if (this.$route.params.id) {
+        UserService.getUserByID(this.$route.params.id)
+          .then((response) => {
+            this.user = response.data.data;
+            this.loadingUser = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.loadingUser = false;
+          });
+      } else {
+        UserService.getUserByToken()
+          .then((response) => {
+            this.user = response.data.data;
+            this.loadingUser = false;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.loadingUser = false;
+          });
+      }
+    },
+  },
+});
 </script>
 
 <style></style>

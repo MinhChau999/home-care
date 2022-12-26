@@ -42,7 +42,7 @@ class ResetPasswordUserEmail extends Notification
     public function toMail($notifiable)
     {
         // env('APP_FE_URL') . 
-        $url = 'http://localhost:8080/admin/reset-password?token=' . $this->token;
+        $url =  env('APP_FE_URL') . '/admin/reset-password?token=' . $this->token;
         return (new MailMessage)
                     ->line('The introduction to the notification.')
                     ->action('Reset Password', url($url))

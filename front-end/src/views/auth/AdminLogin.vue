@@ -26,7 +26,7 @@
             id="emailaddress"
             placeholder="Enter your email"
             :class="{
-              'is-invalid': !!errors.length || errors.email,
+              'is-invalid': !!errors.length,
               'is-valid': meta.valid && meta.touched,
             }"
           />
@@ -52,7 +52,7 @@
             id="password"
             placeholder="Enter your password"
             :class="{
-              'is-invalid': !!errors.length || errors.password,
+              'is-invalid': !!errors.length,
             }"
           />
         </Field>
@@ -73,8 +73,8 @@
           >
         </div>
       </div> -->
-      <div v-if="errors.error" class="invalid-feedback mb-2">
-        {{ errors.error }}
+      <div v-if="errors.message" class="invalid-feedback mb-2">
+        {{ errors.message }}
       </div>
       <div class="form-group mb-0 text-center">
         <button class="btn btn-primary btn-block" type="submit">
@@ -154,11 +154,11 @@ export default defineComponent({
         .then((response: any) => {
           this.$router.push({ name: "dashboard" });
           Notification.success(response.message);
+          this.isPending = false;
         })
         .catch((error: any) => {
-          Notification.error(error.response.data.data.error);
-          this.errors = error.response.data.data;
-          console.clear();
+          Notification.error(error.response.data.message);
+          this.errors = error.response.data;
           this.isPending = false;
         });
     },

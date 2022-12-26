@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="user-edit-profile">
     <!-- start page title -->
     <div class="row">
       <div class="col-12">

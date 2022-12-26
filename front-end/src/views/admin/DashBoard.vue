@@ -1,6 +1,6 @@
 <template>
   <!-- start page title -->
-  <div class="content">
+  <div class="user-dashboard">
     <div class="row">
       <div class="col-12">
         <div class="page-title-box">

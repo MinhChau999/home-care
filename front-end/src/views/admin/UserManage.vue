@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="user-manage">
     <!-- start page title -->
     <div class="row">
       <div class="col-12">
@@ -27,9 +27,11 @@
           <div class="card-body">
             <div class="row mb-2">
               <div class="col-sm-4">
-                <a href="javascript:void(0);" class="btn btn-danger mb-2"
+                <router-link
+                  :to="{ name: 'user-create' }"
+                  class="btn btn-danger mb-2"
                   ><i class="mdi mdi-plus-circle mr-2"></i> Add User
-                </a>
+                </router-link>
               </div>
               <div class="col-sm-8">
                 <div class="text-sm-right">
@@ -212,15 +214,15 @@
               <template #loading>
                 <div class="mt-4">
                   <div
-                    class="spinner-grow text-info ml-1 mr-1"
+                    class="spinner-grow text-primary ml-1 mr-1"
                     role="status"
                   ></div>
                   <div
-                    class="spinner-grow text-info ml-1 mr-1"
+                    class="spinner-grow text-primary ml-1 mr-1"
                     role="status"
                   ></div>
                   <div
-                    class="spinner-grow text-info ml-1 mr-1"
+                    class="spinner-grow text-primary ml-1 mr-1"
                     role="status"
                   ></div>
                 </div>
@@ -382,7 +384,7 @@ export default defineComponent({
     };
   },
   async mounted() {
-    await this.getUser();
+    await this.getAllUser();
   },
 
   computed: {
@@ -427,17 +429,17 @@ export default defineComponent({
     },
   },
   methods: {
-    getUser() {
+    getAllUser() {
       this.loading = true;
       UserService.getAllUser()
         .then((response: any) => {
           this.items = response.data.data;
           for (var i in this.items) {
-            this.items[i].gender = this.items[i].gender == 0 ? "Nam" : "Nữ";
+            this.items[i].gender = this.items[i].gender == 1 ? "Nam" : "Nữ";
           }
           this.itemsSelected = [];
           this.loading = false;
-          Notification.success(response.data.message);
+          // Notification.success(response.data.message);
         })
         .catch(() => {
           this.items = [];

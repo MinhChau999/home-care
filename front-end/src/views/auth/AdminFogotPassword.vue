@@ -27,7 +27,7 @@
             id="emailaddress"
             placeholder="Enter your email"
             :class="{
-              'is-invalid': !!errors.length || errors.email,
+              'is-invalid': !!errors.length,
               'is-valid': meta.valid && meta.touched,
             }"
           />

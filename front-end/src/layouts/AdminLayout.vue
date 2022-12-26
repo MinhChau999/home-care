@@ -437,14 +437,14 @@
               >
                 <span class="account-user-avatar">
                   <img
-                    src="@/assets/images/users/avatar-1.jpg"
+                    :src="user.avatar"
                     alt="user-image"
                     class="rounded-circle"
                   />
                 </span>
                 <span>
-                  <span class="account-user-name">Dominic Keller</span>
-                  <span class="account-position">Founder</span>
+                  <span class="account-user-name">{{ user.name }}</span>
+                  <span class="account-position">{{ user.roleName }}</span>
                 </span>
               </a>
               <!-- <div
@@ -599,10 +599,11 @@
 
         <!-- Start Content-->
         <div class="container-fluid">
-          <!-- start content -->
-          <slot />
-          <!-- end content -->
-
+          <div class="content">
+            <!-- start content -->
+            <slot />
+            <!-- end content -->
+          </div>
           <!-- end row -->
         </div>
         <!-- container -->
@@ -633,16 +634,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import vClickOutside from "click-outside-vue3";
 
-export default {
+export default defineComponent({
   directives: {
     clickOutside: vClickOutside.directive,
   },
 
   computed: {
-    loggedIn() {
+    loggedIn(): any {
       return this.$store.state.authAdmin.status.loggedIn;
     },
   },
@@ -654,11 +656,23 @@ export default {
   },
 
   data() {
+    const user: any = {
+      name: this.$store.state.authAdmin.admin
+        ? this.$store.state.authAdmin.admin.name
+        : "",
+      roleName: this.$store.state.authAdmin.admin
+        ? this.$store.state.authAdmin.admin.roleName
+        : "",
+      avatar: this.$store.state.authAdmin.admin
+        ? this.$store.state.authAdmin.admin.avatar
+        : "",
+    };
     return {
       dropdownProfile: false,
       dropdownNotification: false,
       dropdownSearch: false,
       enableSidebar: false,
+      user,
     };
   },
 
@@ -684,5 +698,5 @@ export default {
       this.$router.push({ name: "admin-login" });
     },
   },
-};
+});
 </script>

@@ -15,32 +15,32 @@
     <Form @submit="resetPasswordUser" :validation-schema="schema">
       <div class="form-group">
         <label>New Password</label>
-        <Field name="newPassword" v-slot="{ field }">
+        <Field name="password" v-slot="{ field }">
           <input
             v-bind="field"
-            v-model="user.newPassword"
+            v-model="user.password"
             class="form-control"
             type="password"
-            id="newPassword"
+            id="password"
             placeholder="Enter your password"
           />
         </Field>
-        <ErrorMessage name="newPassword" class="invalid-feedback mt-1" />
+        <ErrorMessage name="password" class="invalid-feedback mt-1" />
       </div>
       <div class="form-group">
         <label>Confirm New Password</label>
-        <Field name="confirm_newPassword" v-slot="{ field }">
+        <Field name="password_confirmation" v-slot="{ field }">
           <input
             v-bind="field"
-            v-model="user.confirm_newPassword"
+            v-model="user.password_confirmation"
             class="form-control"
             type="password"
-            id="confirm_newPassword"
+            id="password_confirmation"
             placeholder="Enter your password"
           />
         </Field>
         <ErrorMessage
-          name="confirm_newPassword"
+          name="password_confirmation"
           class="invalid-feedback mt-1"
         />
       </div>
@@ -80,22 +80,22 @@ export default defineComponent({
   },
   data() {
     const schema = yup.object().shape({
-      newPassword: yup
+      password: yup
         .string()
         .required("Password is required!")
         .min(6, "Must be at least 6 characters!")
         .max(40, "Must be maximum 40 characters!"),
-      confirm_newPassword: yup
+      password_confirmation: yup
         .string()
         .required("Password is required!")
         .min(6, "Must be at least 6 characters!")
         .max(40, "Must be maximum 40 characters!")
-        .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+        .oneOf([yup.ref("password"), null], "Passwords must match"),
     });
     return {
       user: {
-        newPassword: "",
-        confirm_newPassword: "",
+        password: "",
+        password_confirmation: "",
       },
       isPending: false,
       schema,

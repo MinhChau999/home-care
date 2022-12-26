@@ -51,10 +51,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-
-  /**
-   * Profile admin routes
-   */
+  // Profile User
   {
     path: "/admin/profile",
     component: () => import("@/views/admin/ProfileAdmin.vue"),
@@ -63,9 +60,17 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  /**
-   * Profile admin routes
-   */
+
+  // Profile User with ID
+  {
+    path: "/admin/user/:id",
+    component: () => import("@/views/admin/ProfileAdmin.vue"),
+    name: "userid-admin",
+    meta: {
+      layout: "admin",
+    },
+  },
+  // Support for user
   {
     path: "/admin/support",
     component: () => import("@/views/admin/SupportFAQ.vue"),
@@ -74,9 +79,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  /**
-   * Edit profile admin routes
-   */
+  // Edit profile
   {
     path: "/admin/profile/edit",
     component: () => import("@/views/admin/EditProfileAdmin.vue"),
@@ -85,13 +88,20 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  /**
-   * Edit profile admin routes
-   */
+  // User Management
   {
-    path: "/admin/user-manager",
+    path: "/admin/users",
     component: () => import("@/views/admin/UserManage.vue"),
     name: "user-manager",
+    meta: {
+      layout: "admin",
+    },
+  },
+  // User Create
+  {
+    path: "/admin/users/create",
+    component: () => import("@/views/admin/CreateUserAdmin.vue"),
+    name: "user-create",
     meta: {
       layout: "admin",
     },
@@ -100,6 +110,7 @@ const routes: Array<RouteRecordRaw> = [
   /**
    * Auth
    */
+  //Login
   {
     path: "/admin/login",
     meta: {
@@ -108,6 +119,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/AdminLogin.vue"),
     name: "admin-login",
   },
+  //Fogot Password
   {
     path: "/admin/fogot-password",
     meta: {
@@ -116,6 +128,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/AdminFogotPassword.vue"),
     name: "admin-fogot",
   },
+  //Reset Password
   {
     path: "/admin/reset-password",
     meta: {
@@ -124,6 +137,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/AdminResetPassword.vue"),
     name: "admin-reset-password",
   },
+  // Confirm Password Reset
   {
     path: "/admin/page-confirm-password/:email",
     props: true,
@@ -133,6 +147,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/PageConfirmMail.vue"),
     name: "page-confirm-password",
   },
+  // Page Success Password
   {
     path: "/admin/page-success-password",
     meta: {

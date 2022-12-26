@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiEnumController;
 use App\Http\Controllers\ApiPatientController;
 use App\Http\Controllers\ApiUserController;
 use Illuminate\Http\Request;
@@ -23,17 +24,23 @@ Route::post('/users/register', [ApiUserController::class, 'register'])->name('re
 Route::post('/users/login', [ApiUserController::class, 'login'])->name('loginAdmin');
 Route::post('/users/reset-password', [ApiUserController::class, 'sendMail'])->name('sendMail');
 Route::post('/users/reset-password/{token}', [ApiUserController::class, 'resetPassword'])->name('resetPassword');
+Route::get('/users/edit-profile', [ApiUserController::class, 'getUserByToken'])->name('getUserByToken');
+Route::put('/users/update-profile', [ApiUserController::class, 'updateProfile'])->name('updateProfile');
+Route::put('/users/change-password', [ApiUserController::class, 'changePassword'])->name('changePassword');
 
 Route::group([
    'as' => 'users.',
    'prefix' => 'users',
-   // 'middleware' => 'role:admin',
+   'middleware' => 'cors',
 ], function () {
    // Get data from user
    Route::get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
    
    // CRUD
    Route::post('/store', [ApiUserController::class, 'store'])->name('store');
+   Route::get('/edit/{user}', [ApiUserController::class, 'edit'])->name('edit');
+   Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
+   Route::put('/users/update-password/{user}', [ApiUserController::class, 'updatePassword'])->name('updatePassword');
    Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
 });
 
@@ -49,7 +56,12 @@ Route::post('/login', [ApiPatientController::class, 'login'])->name('loginPatien
 // });
 
 /**
- * SendMail
+ * Enums Api routes
  */
-
- Route::get('/admin/reset-password', [ApiUserController::class, 'resetPassword'])->name('resetPassword');
+Route::group([
+   'as' => 'enums.',
+   'prefix' => 'enums',
+   // 'middleware' => 'role:admin',
+], function () {
+   Route::get('/roles', [ApiEnumController::class, 'getRoleUser'])->name('getRoleUser');
+});

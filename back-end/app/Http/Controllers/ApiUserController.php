@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRoleEnum;
+use App\Events\CreateUserEvent;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ResetPasswordUserRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Notifications\ResetPasswordUserEmail;
@@ -15,7 +20,9 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ApiUserController extends BaseController
@@ -23,6 +30,7 @@ class ApiUserController extends BaseController
 
     const VALID_TOKEN = 60; // 60 minutes
 
+    // Authentication
     public function register(RegisterUserRequest $request)
     {
         $input = $request->all();
@@ -39,7 +47,6 @@ class ApiUserController extends BaseController
     public function login(LoginUserRequest $request)
     {
         $input = $request->all();
-
         if (auth('api')->attempt([
             'email' => $input['email'],
             'password' => $input['password']
@@ -48,11 +55,87 @@ class ApiUserController extends BaseController
             $success['name'] = $user->name;
             $success['id'] = $user->id;
             $success['role'] = $user->role;
+            $success['roleName'] = $user->role->name;
+            $success["avatar"] = Storage::disk('public')->url($user['avatar']);
             $success['token'] = $user->createToken('home_care')->accessToken;
             return $this->sendRespone($success, 'Đăng nhập thành công');
         } else {
             return $this->sendError('Sai tên tài khoản hoặc mật khẩu');
         }
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        try {
+            $user = auth("api-admin")->user();
+            $arr = $request->only([
+                "name",
+                "email",
+                "phone",
+                "address",
+                "gender",
+                "birthday",
+            ]);
+            return $arr;
+            if (!isset($request->gender)) {
+                $arr["gender"] = 1;
+            }
+            if ($request->hasFile('avatar')) {
+                // The request contains a file with the 'file' input name.
+                $file = $request->file("avatar");
+                // Generate a unique filename and move the uploaded file to the "public" disk
+                $filename = uniqid() . '.' . $file->extension();
+                $file->move(storage_path('app/public/uploads'), $filename, 'public');
+                $arr['avatar'] = '/uploads/' . $filename;
+                // Generate the URL for the file
+                // $url = Storage::disk('public')->url($arr['avatar']);
+            }
+            $user->fill($arr);
+            $user->save();
+            // if (isset($request->password)) {
+            //     // Update the user's password
+            //     $user->update([
+            //         'password' => Hash::make($request->password),
+            //     ]);
+
+            //     // Revoke all of the user's tokens
+            //     $user->tokens->each(function ($token) {
+            //         $token->revoke();
+            //     });
+            //     $user["changePassword"] = true;
+            // }
+            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            $success["user"] = $user;
+            return $this->sendRespone($success, "Cập nhật thành công");
+        } catch (Exception $e) {
+            return $this->sendError("Cập nhật thất bại", $e->getMessage());
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+
+        // Get the user
+        $user = auth('api-admin')->user();
+
+        // Check the current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            // Return an error if the current password is incorrect
+            return $this->sendError("The current password is incorrect");
+        }
+
+        // Update the user's password
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Revoke all of the user's tokens
+        $user->tokens->each(function ($token) {
+            $token->revoke();
+        });
+
+        // Redirect to the dashboard with a success message
+        return $this->sendRespone([], 'Your password and tokens have been updated');
     }
 
     public function sendMail(ResetPasswordUserRequest $request)
@@ -84,7 +167,7 @@ class ApiUserController extends BaseController
         }
     }
 
-    public function resetPassword(Request $request, $token)
+    public function resetPassword(ResetPasswordRequest $request, $token)
     {
         $passwordReset = PasswordReset::where('token', $token)->first();
 
@@ -98,12 +181,18 @@ class ApiUserController extends BaseController
         }
 
         $user = User::where('email', $passwordReset->email)->firstOrFail();
-        $user->password = Hash::make($request->get('newPassword'));
+        $user->password = Hash::make($request->get('password'));
         $user->save();
+        // Revoke all of the user's tokens
+        $user->tokens->each(function ($token) {
+            $token->revoke();
+        });
         $passwordReset->delete();
 
-        return $this->sendRespone(null, 'change password success, please login!');
+        return $this->sendRespone(null, 'Change password success, please login!');
     }
+
+    // get data user
 
     public function getAllUSer()
     {
@@ -111,8 +200,32 @@ class ApiUserController extends BaseController
         // Add name Enums from backends
         foreach ($users as &$user) {
             $user["role"] = UserRoleEnum::from($user["role"])->name;
+            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
         }
         return $this->sendRespone($users, "Kết nối thành công");
+    }
+
+    public function getUserByToken()
+    {
+        try {
+            $user = auth('api-admin')->user();
+            $user['roleName'] = $user->role->name;
+            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            return $this->sendRespone($user, "Kết nối thành công");
+        } catch (Exception $e) {
+            return $this->sendError('Kết nối thất bại', $e->getMessage());
+        }
+    }
+
+    public function edit(User $user)
+    {
+        try {
+            $user['roleName'] = $user->role->name;
+            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            return $this->sendRespone($user, "Kết nối thành công");
+        } catch (Exception $e) {
+            return $this->sendError('Kết nối thất bại', $e->getMessage());
+        }
     }
 
     /**
@@ -128,21 +241,86 @@ class ApiUserController extends BaseController
             $arr = $request->only([
                 "name",
                 "email",
-                "avatar",
                 "phone",
                 "address",
                 "gender",
                 "birthday",
                 "role",
             ]);
+            if (!isset($request->gender)) {
+                $arr["gender"] = 1;
+            }
+            if (!isset($request->name)) {
+                $arr["name"] = "User Name";
+            }
+            // return $request->file('avatar');
+            if ($request->hasFile('avatar')) {
+                // The request contains a file with the 'file' input name.
+                $file = $request->file("avatar");
+                // Generate a unique filename and move the uploaded file to the "public" disk
+                $filename = uniqid() . '.' . $file->extension();
+                $file->move(storage_path('app/public/uploads'), $filename, 'public');
+                $arr['avatar'] = '/uploads/' . $filename;
+                // Generate the URL for the file
+                // $url = Storage::disk('public')->url($arr['avatar']);
+            } else {
+                // Get the full paths to the source and destination files
+                $source = public_path('image/avatar.png');
+                $destination = storage_path('app/public/uploads/avatar.png');
+                // Check if the file already exists
+                if (!File::exists($destination)) {
+                    // Move the file
+                    File::move($source, $destination);
+                }
+                $arr['avatar'] = '/uploads/avatar.png';
+            }
+
             $arr['password'] = Hash::make('123123');
             $user = new User();
             $user->fill($arr);
             $user->save();
-            // UserCreateEvent::dispatch($user);
+            CreateUserEvent::dispatch($user);
             return $this->sendRespone(null, "Tạo tài khoản thành công");
         } catch (Exception $e) {
             return $this->sendError('Tạo tài khoản thất bại', $e->getMessage());
+        }
+    }
+
+    /**
+     * Update the specified resource from storage.
+     *
+     * @param  \App\Models\User  $users
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        try {
+            $arr = $request->only([
+                "name",
+                "email",
+                "phone",
+                "address",
+                "gender",
+                "birthday",
+            ]);
+            if (!isset($request->gender)) {
+                $arr["gender"] = 1;
+            }
+            if ($request->hasFile('avatar')) {
+                // The request contains a file with the 'file' input name.
+                $file = $request->file("avatar");
+                // Generate a unique filename and move the uploaded file to the "public" disk
+                $filename = uniqid() . '.' . $file->extension();
+                $file->move(storage_path('app/public/uploads'), $filename, 'public');
+                $arr['avatar'] = '/uploads/' . $filename;
+            }
+            $user->fill($arr);
+            $user->save();
+            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            $success["user"] = $user;
+            return $this->sendRespone($success, "Cập nhật thành công");
+        } catch (Exception $e) {
+            return $this->sendError("Cập nhật thất bại", $e->getMessage());
         }
     }
 

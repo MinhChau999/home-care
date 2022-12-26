@@ -41,11 +41,12 @@ class UserCreateNotificationMail extends Notification
      */
     public function toMail($notifiable)
     {
+        $url =  env('APP_FE_URL') . '/admin/login';
         return (new MailMessage)
-            ->line('Tài khoản với gmail ' . $this->user->mail . ' đã được tạo')
-            ->action(' Login ','http://localhost:8080/admin/login')
+            ->line('Tài khoản với gmail ' . $this->user->email . ' đã được tạo')
             ->line('Bạn cần đăng nhập và đổi mật khẩu')
-            ->line('Mật khẩu mặc định là "123123" !');
+            ->line('Mật khẩu mặc định là "123123" !')
+            ->action(' Login for Admin ', $url);
     }
 
     /**

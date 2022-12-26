@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\UserRoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +25,9 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
-            'role' => ['required', new Enum(UserRoleEnum::class)],
-            "name" => "nullable|string",
+            'email' => 'required|email',
+            // ,Rule::unique('users')->ignore($this->route('user')->id)
+            "name" => "nullable|string|min:6",
             "phone"=> "nullable|string",
             "address"=> "nullable|string",
             "gender"=> "nullable|boolean",
