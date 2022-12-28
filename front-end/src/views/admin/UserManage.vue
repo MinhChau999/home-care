@@ -199,10 +199,15 @@
               show-index
               hide-footer
             >
-              <template #item-name="{ name, avatar }">
+              <template #item-name="{ name, avatar, item }">
                 <div class="table-user">
                   <img :src="avatar" class="mr-2 rounded-circle" />
-                  <a href="javascript:void(0);" class="text-dark">{{ name }}</a>
+                  <a
+                    href="javascript:void(0);"
+                    class="text-dark"
+                    @click="viewItem(item)"
+                    >{{ name }}</a
+                  >
                 </div>
               </template>
               <template #item-email="{ email }">
@@ -235,13 +240,6 @@
                     class="action-icon"
                   >
                     <i class="mdi mdi-eye"></i
-                  ></a>
-                  <a
-                    @click="editItem(item)"
-                    href="javascript:void(0);"
-                    class="action-icon"
-                  >
-                    <i class="mdi mdi-square-edit-outline"></i
                   ></a>
                   <a
                     @click="deleteItem(item)"
@@ -353,12 +351,12 @@ export default defineComponent({
     const itemsSelected: Item[] = [];
     const headers: Header[] = [
       // { text: "#", value: "id" },
-      { text: "Name", value: "name", sortable: true, width: 160 },
-      { text: "Email", value: "email", width: 200 },
-      { text: "Phone", value: "phone", width: 160 },
+      { text: "Name", value: "name", sortable: true, width: 200 },
+      { text: "Email", value: "email", sortable: true, width: 200 },
+      { text: "Phone", value: "phone", sortable: true, width: 160 },
       { text: "Gender", value: "gender" },
       { text: "Birthday", value: "birthday", width: 130 },
-      { text: "Role", value: "role" },
+      { text: "Role", value: "role", sortable: true },
       { text: "Operation", value: "operation" },
     ];
 
@@ -485,9 +483,11 @@ export default defineComponent({
       (this.$refs.dataTable as any).prevPage();
       this.changeFromAndTo();
     },
-    viewItem(item: Item[]): void {
-      console.log(item);
-      console.log(this.$store.state.authAdmin.admin);
+    viewItem(item: any): void {
+      this.$router.push({
+        name: "edit-userid",
+        params: { id: item.id.toString() },
+      });
     },
     onClickOutside() {
       if (this.showExport == true) {
@@ -496,9 +496,6 @@ export default defineComponent({
     },
     exportData(type: string) {
       ExcelParser.exportDataFromJSON(this.items, "users", type);
-    },
-    editItem(item: Item[]): void {
-      console.log(item);
     },
     deleteItem(val: any) {
       if (confirm("Do you really want to delete?")) {
@@ -514,8 +511,8 @@ export default defineComponent({
         }
         this.items = this.items.filter((item) => item.id !== val.id);
         UserService.deleteUser(val.id)
-          .then((response: any) => {
-            console.log(response.data.message);
+          .then(() => {
+            Notification.success("Xóa thành công");
           })
           .catch(() => {
             Notification.error("Xóa thất bại");

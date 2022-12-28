@@ -464,8 +464,9 @@
                 <!-- item-->
                 <router-link
                   :to="{ name: 'profile-admin' }"
+                  href="javascript:void(0);"
                   class="dropdown-item notify-item"
-                  v-on:click="hideDropdown"
+                  @click="hideDropdown"
                 >
                   <i class="mdi mdi-account-circle mr-1"></i>
                   <span>My Account</span>
@@ -647,6 +648,19 @@ export default defineComponent({
     loggedIn(): any {
       return this.$store.state.authAdmin.status.loggedIn;
     },
+    user(): any {
+      return {
+        name: this.$store.state.authAdmin.admin
+          ? this.$store.state.authAdmin.admin.name
+          : "",
+        roleName: this.$store.state.authAdmin.admin
+          ? this.$store.state.authAdmin.admin.roleName
+          : "",
+        avatar: this.$store.state.authAdmin.admin
+          ? this.$store.state.authAdmin.admin.avatar
+          : "",
+      };
+    },
   },
 
   mounted() {
@@ -656,27 +670,18 @@ export default defineComponent({
   },
 
   data() {
-    const user: any = {
-      name: this.$store.state.authAdmin.admin
-        ? this.$store.state.authAdmin.admin.name
-        : "",
-      roleName: this.$store.state.authAdmin.admin
-        ? this.$store.state.authAdmin.admin.roleName
-        : "",
-      avatar: this.$store.state.authAdmin.admin
-        ? this.$store.state.authAdmin.admin.avatar
-        : "",
-    };
     return {
       dropdownProfile: false,
       dropdownNotification: false,
       dropdownSearch: false,
       enableSidebar: false,
-      user,
     };
   },
 
   methods: {
+    // navigateTo(name: any) {
+    //   this.$router.push({ name: name });
+    // },
     onClickOutside() {
       if (this.dropdownProfile == true) {
         this.dropdownProfile = false;

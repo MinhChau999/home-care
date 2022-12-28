@@ -12,6 +12,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ResetPasswordUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -33,34 +34,41 @@ class ApiUserController extends BaseController
     // Authentication
     public function register(RegisterUserRequest $request)
     {
-        $input = $request->all();
-
-        $user = new User();
-        $user->fill($input);
-        $user->password = Hash::make($user->password);
-        $user->save();
-        $success['token'] = $user->createToken('home_care')->accessToken;
-        $success['name'] = $user->name;
-        return $this->sendRespone($success, 'Tạo tài khoản thành công');
+        try {
+            $input = $request->all();
+            $user = new User();
+            $user->fill($input);
+            $user->password = Hash::make($user->password);
+            $user->save();
+            $success['token'] = $user->createToken('home_care')->accessToken;
+            $success['name'] = $user->name;
+            return $this->sendRespone($success, 'Tạo tài khoản thành công');
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
+        }
     }
 
     public function login(LoginUserRequest $request)
     {
-        $input = $request->all();
-        if (auth('api')->attempt([
-            'email' => $input['email'],
-            'password' => $input['password']
-        ])) {
-            $user = User::where('email', $input['email'])->first();
-            $success['name'] = $user->name;
-            $success['id'] = $user->id;
-            $success['role'] = $user->role;
-            $success['roleName'] = $user->role->name;
-            $success["avatar"] = Storage::disk('public')->url($user['avatar']);
-            $success['token'] = $user->createToken('home_care')->accessToken;
-            return $this->sendRespone($success, 'Đăng nhập thành công');
-        } else {
-            return $this->sendError('Sai tên tài khoản hoặc mật khẩu');
+        try {
+            $input = $request->all();
+            if (auth('api')->attempt([
+                'email' => $input['email'],
+                'password' => $input['password']
+            ])) {
+                $user = User::where('email', $input['email'])->first();
+                $success['name'] = $user->name;
+                $success['id'] = $user->id;
+                $success['role'] = $user->role;
+                $success['roleName'] = $user->role->name;
+                $success["avatar"] = Storage::disk('public')->url($user['avatar']);
+                $success['token'] = $user->createToken('home_care')->accessToken;
+                return $this->sendRespone($success, 'Đăng nhập thành công');
+            } else {
+                return $this->sendError('Sai tên tài khoản hoặc mật khẩu');
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
@@ -76,7 +84,6 @@ class ApiUserController extends BaseController
                 "gender",
                 "birthday",
             ]);
-            return $arr;
             if (!isset($request->gender)) {
                 $arr["gender"] = 1;
             }
@@ -105,37 +112,41 @@ class ApiUserController extends BaseController
             //     $user["changePassword"] = true;
             // }
             $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            $user['roleName'] = $user->role->name;
             $success["user"] = $user;
             return $this->sendRespone($success, "Cập nhật thành công");
         } catch (Exception $e) {
-            return $this->sendError("Cập nhật thất bại", $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
     public function changePassword(ChangePasswordRequest $request)
     {
+        try {
+            // Get the user
+            $user = auth('api-admin')->user();
 
-        // Get the user
-        $user = auth('api-admin')->user();
+            // Check the current password
+            if (!Hash::check($request->current_password, $user->password)) {
+                // Return an error if the current password is incorrect
+                return $this->sendError("The current password is incorrect");
+            }
 
-        // Check the current password
-        if (!Hash::check($request->current_password, $user->password)) {
-            // Return an error if the current password is incorrect
-            return $this->sendError("The current password is incorrect");
+            // Update the user's password
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Revoke all of the user's tokens
+            $user->tokens->each(function ($token) {
+                $token->revoke();
+            });
+
+            // Redirect to the dashboard with a success message
+            return $this->sendRespone([], 'Your password and tokens have been updated');
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
-
-        // Update the user's password
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Revoke all of the user's tokens
-        $user->tokens->each(function ($token) {
-            $token->revoke();
-        });
-
-        // Redirect to the dashboard with a success message
-        return $this->sendRespone([], 'Your password and tokens have been updated');
     }
 
     public function sendMail(ResetPasswordUserRequest $request)
@@ -163,46 +174,54 @@ class ApiUserController extends BaseController
 
             return $this->sendRespone(null, 'We have e-mailed your password reset link!');
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong!', $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
     public function resetPassword(ResetPasswordRequest $request, $token)
     {
-        $passwordReset = PasswordReset::where('token', $token)->first();
+        try {
+            $passwordReset = PasswordReset::where('token', $token)->first();
 
-        if (!$passwordReset) {
-            return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+            if (!$passwordReset) {
+                return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::VALID_TOKEN)->isPast()) {
+            if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::VALID_TOKEN)->isPast()) {
+                $passwordReset->delete();
+                return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user = User::where('email', $passwordReset->email)->firstOrFail();
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+            // Revoke all of the user's tokens
+            $user->tokens->each(function ($token) {
+                $token->revoke();
+            });
             $passwordReset->delete();
-            return $this->sendError('The token is invalid.', [], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+            return $this->sendRespone(null, 'Change password success, please login!');
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
-
-        $user = User::where('email', $passwordReset->email)->firstOrFail();
-        $user->password = Hash::make($request->get('password'));
-        $user->save();
-        // Revoke all of the user's tokens
-        $user->tokens->each(function ($token) {
-            $token->revoke();
-        });
-        $passwordReset->delete();
-
-        return $this->sendRespone(null, 'Change password success, please login!');
     }
 
     // get data user
 
     public function getAllUSer()
     {
-        $users = User::latest()->get()->toArray();
-        // Add name Enums from backends
-        foreach ($users as &$user) {
-            $user["role"] = UserRoleEnum::from($user["role"])->name;
-            $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+        try {
+            $users = User::latest()->get()->toArray();
+            // Add name Enums from backends
+            foreach ($users as &$user) {
+                $user["role"] = UserRoleEnum::from($user["role"])->name;
+                $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            }
+            return $this->sendRespone($users, "Kết nối thành công");
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
-        return $this->sendRespone($users, "Kết nối thành công");
     }
 
     public function getUserByToken()
@@ -213,7 +232,7 @@ class ApiUserController extends BaseController
             $user["avatar"] = Storage::disk('public')->url($user['avatar']);
             return $this->sendRespone($user, "Kết nối thành công");
         } catch (Exception $e) {
-            return $this->sendError('Kết nối thất bại', $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
@@ -224,7 +243,7 @@ class ApiUserController extends BaseController
             $user["avatar"] = Storage::disk('public')->url($user['avatar']);
             return $this->sendRespone($user, "Kết nối thành công");
         } catch (Exception $e) {
-            return $this->sendError('Kết nối thất bại', $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
@@ -282,7 +301,7 @@ class ApiUserController extends BaseController
             CreateUserEvent::dispatch($user);
             return $this->sendRespone(null, "Tạo tài khoản thành công");
         } catch (Exception $e) {
-            return $this->sendError('Tạo tài khoản thất bại', $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
@@ -317,10 +336,37 @@ class ApiUserController extends BaseController
             $user->fill($arr);
             $user->save();
             $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+            $user['roleName'] = $user->role->name;
             $success["user"] = $user;
             return $this->sendRespone($success, "Cập nhật thành công");
         } catch (Exception $e) {
-            return $this->sendError("Cập nhật thất bại", $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
+        }
+    }
+
+    public function updatePassword(UpdateUserPasswordRequest $request, User $user)
+    {
+        try {
+            // Check the current password
+            if (!Hash::check($request->current_password, $user->password)) {
+                // Return an error if the current password is incorrect
+                return $this->sendError("The current password is incorrect");
+            }
+
+            // Update the user's password
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Revoke all of the user's tokens
+            $user->tokens->each(function ($token) {
+                $token->revoke();
+            });
+
+            // Redirect to the dashboard with a success message
+            return $this->sendRespone([], 'User password and tokens have been updated');
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 
@@ -340,7 +386,7 @@ class ApiUserController extends BaseController
             $user->delete();
             return $this->sendRespone(null, 'Xóa thành công');
         } catch (Exception $e) {
-            return $this->sendError('Xóa thất bại', $e->getMessage());
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 }

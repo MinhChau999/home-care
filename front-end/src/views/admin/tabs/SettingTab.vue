@@ -329,9 +329,9 @@
       <!-- end pending  -->
     </Form>
     <transition name="modal">
+      <!-- @click="showModal = false" -->
       <div
         v-if="showModal"
-        @click="showModal = false"
         id="standard-modal"
         class="modal"
         tabindex="-1"
@@ -352,7 +352,7 @@
                   class="close"
                   data-dismiss="modal"
                   aria-hidden="true"
-                  @click="showModal = false"
+                  @click="(showModal = false), clearUserPassword"
                 >
                   ×
                 </button>
@@ -441,11 +441,21 @@
                 </div>
               </div>
               <div class="modal-footer">
+                <!-- pending -->
+                <div class="form-group mb-0 text-center">
+                  <div
+                    :class="{
+                      'spinner-border text-primary': isPendingPassword,
+                    }"
+                    role="status"
+                  ></div>
+                </div>
+                <!-- end pending  -->
                 <button
                   type="button"
                   class="btn btn-light"
                   data-dismiss="modal"
-                  @click="showModal = false"
+                  @click="(showModal = false), clearUserPassword"
                 >
                   Close
                 </button>
@@ -480,6 +490,24 @@ export default defineComponent({
   },
   props: ["modelValue"],
   emits: ["update:modelValue"],
+  computed: {
+    user(): any {
+      return {
+        address: this.modelValue.address,
+        avatar: null,
+        birthday: this.modelValue.birthday,
+        created_at: this.modelValue.created_at,
+        email: this.modelValue.email,
+        gender: this.modelValue.gender,
+        id: this.modelValue.id,
+        name: this.modelValue.name,
+        phone: this.modelValue.phone,
+        role: this.modelValue.role,
+        roleName: this.modelValue.roleName,
+        updated_at: this.modelValue.updated_at,
+      };
+    },
+  },
   data() {
     const schema = yup.object().shape({
       email: yup
@@ -506,20 +534,6 @@ export default defineComponent({
         .max(40, "Must be maximum 40 characters!")
         .oneOf([yup.ref("password"), null], "Passwords must match"),
     });
-    const user: any = {
-      address: this.modelValue.address,
-      avatar: null,
-      birthday: this.modelValue.birthday,
-      created_at: this.modelValue.created_at,
-      email: this.modelValue.email,
-      gender: this.modelValue.gender,
-      id: this.modelValue.id,
-      name: this.modelValue.name,
-      phone: this.modelValue.phone,
-      role: this.modelValue.role,
-      roleName: this.modelValue.roleName,
-      updated_at: this.modelValue.updated_at,
-    };
     const userPassword: any = {
       current_password: "",
       password: "",
@@ -527,13 +541,13 @@ export default defineComponent({
     };
     const avatar: any = this.modelValue.avatar;
     return {
-      user,
       userPassword,
       avatar,
       schema,
       schemaChangePass,
       showModal: false,
       isPending: false,
+      isPendingPassword: false,
       isButtonDisabled: {
         email: true,
         password: true,
@@ -570,12 +584,21 @@ export default defineComponent({
             this.isPending = false;
           });
       } else {
-        UserService.updateUserByToken(formData)
+        UserService.updateProfile(formData)
           .then((response) => {
             this.isPending = false;
             Notification.success(response.data.message);
             // update value user for profile
             this.updateValue(response.data.data.user);
+            // update authAdmin
+            this.$store.state.authAdmin.admin.name =
+              response.data.data.user.name;
+            this.$store.state.authAdmin.admin.roleName =
+              response.data.data.user.roleName;
+            this.$store.state.authAdmin.admin.role =
+              response.data.data.user.role;
+            this.$store.state.authAdmin.admin.avatar =
+              response.data.data.user.avatar;
           })
           .catch((error) => {
             Notification.error(error.response.data.message);
@@ -584,18 +607,34 @@ export default defineComponent({
       }
     },
     changPassword() {
+      this.isPendingPassword = true;
       //Login again when change password
       if (this.$route.params.id) {
-        console.log("hello");
+        UserService.changePasswordUser(this.userPassword, this.$route.params.id)
+          .then(() => {
+            Notification.success(
+              "Change password success, please login again!"
+            );
+            this.isPendingPassword = false;
+            this.clearUserPassword();
+          })
+          .catch((error) => {
+            Notification.error(error.response.data.message);
+            this.isPendingPassword = false;
+            this.clearUserPassword();
+          });
       } else {
-        UserService.changePassword(this.userPassword)
+        UserService.changePasswordProfile(this.userPassword)
           .then(() => {
             this.$store.dispatch("authAdmin/logout");
             this.$router.push({ name: "admin-login" });
             Notification.success("Change password success, please login!");
+            this.isPendingPassword = false;
           })
           .catch((error) => {
             Notification.error(error.response.data.message);
+            this.isPendingPassword = false;
+            this.clearUserPassword();
           });
       }
     },
@@ -604,6 +643,13 @@ export default defineComponent({
     },
     onFileChange(event: any) {
       this.user.avatar = event.target.files[0];
+    },
+    clearUserPassword() {
+      this.userPassword = {
+        current_password: "",
+        password: "",
+        password_confirmation: "",
+      };
     },
   },
   // component properties and methods

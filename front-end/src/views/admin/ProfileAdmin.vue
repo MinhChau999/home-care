@@ -8,7 +8,6 @@
               v-if="!user.avatar"
               src="@/assets/images/users/avatar-1.jpg"
               class="rounded-circle avatar-lg img-thumbnail"
-              alt="profile-image"
             />
             <img
               v-else
@@ -95,7 +94,6 @@
                   <img
                     src="@/assets/images/users/avatar-2.jpg"
                     class="rounded-circle"
-                    alt=""
                   />
                 </div>
                 <p class="inbox-item-author">Tomaslau</p>
@@ -187,8 +185,6 @@
               <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
                 <a
                   href="#"
-                  data-toggle="tab"
-                  aria-expanded="false"
                   class="nav-link rounded-0"
                   @click="activeTab = index"
                   :class="{ active: activeTab === index }"
@@ -234,6 +230,11 @@ export default defineComponent({
     SettingTab,
     WorkingTab,
   },
+  computed: {
+    path(): any {
+      return this.$route.path;
+    },
+  },
   data() {
     return {
       user: {
@@ -260,8 +261,28 @@ export default defineComponent({
       ],
     };
   },
-  async mounted() {
-    await this.getUser();
+  watch: {
+    path(newValue, oldValue) {
+      this.user = {
+        address: "",
+        avatar: "",
+        birthday: "",
+        created_at: "",
+        email: "",
+        email_verified_at: "",
+        gender: "",
+        id: "",
+        name: "",
+        phone: "",
+        role: "",
+        roleName: "",
+        updated_at: "",
+      };
+      this.getUser();
+    },
+  },
+  mounted() {
+    this.getUser();
   },
   methods: {
     getUser() {

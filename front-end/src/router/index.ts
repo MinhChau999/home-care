@@ -65,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/admin/user/:id",
     component: () => import("@/views/admin/ProfileAdmin.vue"),
-    name: "userid-admin",
+    name: "edit-userid",
     meta: {
       layout: "admin",
     },

@@ -31,7 +31,7 @@ Route::put('/users/change-password', [ApiUserController::class, 'changePassword'
 Route::group([
    'as' => 'users.',
    'prefix' => 'users',
-   'middleware' => 'cors',
+   'middleware' => 'role:admin',
 ], function () {
    // Get data from user
    Route::get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');

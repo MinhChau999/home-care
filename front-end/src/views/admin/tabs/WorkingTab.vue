@@ -1,5 +1,5 @@
 <template>
-  <div class="working-tab" id="timeline">
+  <div class="working-tab">
     <!-- comment box -->
     <div class="border rounded mt-2 mb-3">
       <form action="#" class="comment-area-box">
