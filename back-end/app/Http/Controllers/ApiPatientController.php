@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginPatientRequest;
 use App\Http\Requests\RegisterPatiantRequest;
 use App\Models\Patient;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ApiPatientController extends BaseController
 {
@@ -38,6 +40,21 @@ class ApiPatientController extends BaseController
             return $this->sendRespone($success, 'Đăng nhập thành công');
         } else {
             return $this->sendError('Đăng nhập không thành công', ['error' => 'Sai tên tài khoản hoặc mật khẩu']);
+        }
+    }
+
+    // Get data patient information
+    public function getAllPatient()
+    {
+        try {
+            $patients = Patient::latest()->get()->toArray();
+            // Add name Enums from backends
+            foreach ($patients as &$patient) {
+                $patient["avatar"] = Storage::disk('public')->url($patient['avatar']);
+            }
+            return $this->sendRespone($patients, "Kết nối thành công");
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
 }

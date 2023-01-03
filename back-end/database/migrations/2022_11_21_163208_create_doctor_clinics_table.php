@@ -17,10 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('clinic_id')->constrained();
             $table->foreignId('doctor_id')->constrained('users');
-            $table->foreignId('specialist_id')->constrained('specialists');
             $table->timestamps();
 
-            $table->unique(['clinic_id', 'doctor_id', 'specialist_id']);
+            $table->unique(['clinic_id', 'doctor_id']);
         });
     }
 

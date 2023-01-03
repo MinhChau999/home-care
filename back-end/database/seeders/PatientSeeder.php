@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Enums\UserRoleEnum;
+use App\Models\Patient;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class UserSeeder extends Seeder
+class PatientSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,22 +16,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-
         $faker = \Faker\Factory::create('vi_VN');
-        $arr[] = [
-            'name' => $faker->firstName . ' ' . $faker->lastName,
-            'email' => "chaudai621@gmail.com",
-            'password' => Hash::make('123123'),
-            'phone' => $faker->phoneNumber,
-            'avatar' => '/uploads/avatar.png',
-            'address' => $faker->address,
-            'gender' => $faker->boolean,
-            'birthday' => $faker->date,
-            'role' => 0,
-            'created_at' => $faker->dateTimeBetween('-1 years', 'now'),
-            'updated_at' => $faker->dateTimeBetween('-1 years', 'now'),
-        ];
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $arr[] = [
                 'name' => $faker->firstName . ' ' . $faker->lastName,
                 'email' => $faker->email,
@@ -42,11 +27,10 @@ class UserSeeder extends Seeder
                 'address' => $faker->address,
                 'gender' => $faker->boolean,
                 'birthday' => $faker->date,
-                'role' => UserRoleEnum::Doctor,
                 'created_at' => $faker->dateTimeBetween('-1 years', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 years', 'now'),
             ];
         }
-        User::insert($arr);
+        Patient::insert($arr);
     }
 }

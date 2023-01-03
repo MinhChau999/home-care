@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ApiBookingController;
+use App\Http\Controllers\ApiClinicController;
 use App\Http\Controllers\ApiEnumController;
 use App\Http\Controllers\ApiPatientController;
 use App\Http\Controllers\ApiUserController;
@@ -34,7 +36,57 @@ Route::group([
    'middleware' => 'role:admin',
 ], function () {
    // Get data from user
-   Route::get('/get-all-user', [ApiUserController::class, 'getAllUSer'])->name('getAllUSer');
+   Route::get('/get-all-user', [ApiUserController::class, 'getAllUser'])->name('getAllUser');
+   Route::get('/get-all-doctor', [ApiUserController::class, 'getAllDoctor'])->name('getAllDoctor');
+   
+   // CRUD
+   Route::post('/store', [ApiUserController::class, 'store'])->name('store');
+   Route::get('/edit/{user}', [ApiUserController::class, 'edit'])->name('edit');
+   Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
+   Route::put('/users/update-password/{user}', [ApiUserController::class, 'updatePassword'])->name('updatePassword');
+   Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
+});
+
+Route::group([
+   'as' => 'patients.',
+   'prefix' => 'patients',
+   'middleware' => 'role:admin',
+], function () {
+   // Get data from user
+   Route::get('/get-all-patient', [ApiPatientController::class, 'getAllPatient'])->name('getAllPatient');
+   
+   // CRUD
+   Route::post('/store', [ApiUserController::class, 'store'])->name('store');
+   Route::get('/edit/{user}', [ApiUserController::class, 'edit'])->name('edit');
+   Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
+   Route::put('/users/update-password/{user}', [ApiUserController::class, 'updatePassword'])->name('updatePassword');
+   Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
+});
+
+Route::group([
+   'as' => 'clinics.',
+   'prefix' => 'clinics',
+   // 'middleware' => 'role:doctor',
+], function () {
+   // Get data from user
+   Route::get('/get-all-clinic', [ApiClinicController::class, 'getAllClinic'])->name('getAllClinic');
+   
+   // CRUD
+   Route::post('/store', [ApiUserController::class, 'store'])->name('store');
+   Route::get('/edit/{user}', [ApiUserController::class, 'edit'])->name('edit');
+   Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
+   Route::put('/users/update-password/{user}', [ApiUserController::class, 'updatePassword'])->name('updatePassword');
+   Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
+});
+
+Route::group([
+   'as' => 'bookings.',
+   'prefix' => 'bookings',
+   // 'middleware' => 'role:doctor',
+], function () {
+   // Get data from user
+   Route::get('/get-all-booking-homes', [ApiBookingController::class, 'getAllBookingHomes'])->name('getAllBookingHomes');
+   Route::get('/get-all-booking-clinics', [ApiBookingController::class, 'getAllBookingClinics'])->name('getAllBookingClinics');
    
    // CRUD
    Route::post('/store', [ApiUserController::class, 'store'])->name('store');
@@ -46,7 +98,7 @@ Route::group([
 
 
 /**
- * Start API for PATIENT
+ * Start API for Site
  */
 Route::post('/register', [ApiPatientController::class, 'register'])->name('registerPatient');
 Route::post('/login', [ApiPatientController::class, 'login'])->name('loginPatient');

@@ -209,7 +209,7 @@ class ApiUserController extends BaseController
 
     // get data user
 
-    public function getAllUSer()
+    public function getAllUser()
     {
         try {
             $users = User::latest()->get()->toArray();
@@ -223,6 +223,23 @@ class ApiUserController extends BaseController
             return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
         }
     }
+
+        // get data user
+
+        public function getAllDoctor()
+        {
+            try {
+                $users = User::query()->where('role', UserRoleEnum::Doctor)->latest()->get()->toArray();
+                // Add name Enums from backends
+                foreach ($users as &$user) {
+                    $user["role"] = UserRoleEnum::from($user["role"])->name;
+                    $user["avatar"] = Storage::disk('public')->url($user['avatar']);
+                }
+                return $this->sendRespone($users, "Kết nối thành công");
+            } catch (Exception $e) {
+                return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
+            }
+        }
 
     public function getUserByToken()
     {

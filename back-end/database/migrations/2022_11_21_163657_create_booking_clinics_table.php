@@ -17,10 +17,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained();
             $table->foreignId('doctor_clinic_id')->constrained();
+            $table->foreignId('service_id')->constrained();
             $table->date('date_booking');
             $table->time('time_booking');
+            $table->string('email_notification');
             $table->double('price')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('status')->default(0)->nullable();
             $table->timestamps();
 
             $table->unique(['patient_id', 'doctor_clinic_id', 'date_booking', 'time_booking'], 'unique_doctor_clinic_time');

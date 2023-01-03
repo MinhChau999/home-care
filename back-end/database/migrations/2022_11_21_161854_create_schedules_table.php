@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('doctor_id')->constrained('users');
             $table->time('time_of_day');
-            $table->date('day_of_week');
+            $table->integer('day_of_week');
             $table->timestamps();
 
             $table->unique(['doctor_id', 'time_of_day', 'day_of_week']);

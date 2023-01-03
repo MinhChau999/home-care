@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('specialist_id')->nullable()->constrained('specialists');
             $table->string('academic')->nullable();
             $table->string('experience')->nullable();
-            $table->integer('rank')->default(0);
             $table->string('workplaces')->nullable();
         });
     }
