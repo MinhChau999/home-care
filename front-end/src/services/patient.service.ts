@@ -1,13 +1,10 @@
 import BassRequest from "./base-request";
 
-class UserService {
-  getPublicContent() {
-    return BassRequest.get("/all");
-  }
-
-  getUserBoard() {
-    return BassRequest.get("/user");
+class PatientService {
+  // get data
+  getAllPatient() {
+    return BassRequest.get("/patients/get-all-patient", "admin");
   }
 }
 
-export default new UserService();
+export default new PatientService();

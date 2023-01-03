@@ -591,20 +591,25 @@ export default defineComponent({
             // update value user for profile
             this.updateValue(response.data.data.user);
             // update authAdmin
-            this.$store.state.authAdmin.admin.name =
-              response.data.data.user.name;
-            this.$store.state.authAdmin.admin.roleName =
-              response.data.data.user.roleName;
-            this.$store.state.authAdmin.admin.role =
-              response.data.data.user.role;
-            this.$store.state.authAdmin.admin.avatar =
-              response.data.data.user.avatar;
+            this.updateAuthAdmin(response.data.data.user);
           })
           .catch((error) => {
             Notification.error(error.response.data.message);
             this.isPending = false;
           });
       }
+    },
+    updateAuthAdmin(user: any) {
+      this.$store.state.authAdmin.admin.name = user.name;
+      this.$store.state.authAdmin.admin.roleName = user.roleName;
+      this.$store.state.authAdmin.admin.role = user.role;
+      this.$store.state.authAdmin.admin.avatar = user.avatar;
+      const admin = JSON.parse(localStorage.getItem("tokenadmin") || "[]");
+      admin.name = user.name;
+      admin.roleName = user.roleName;
+      admin.role = user.role;
+      admin.avatar = user.avatar;
+      localStorage.setItem("tokenadmin", JSON.stringify(admin));
     },
     changPassword() {
       this.isPendingPassword = true;

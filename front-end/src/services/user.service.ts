@@ -13,6 +13,10 @@ class UserService {
     return BassRequest.get("/users/get-all-user", "admin");
   }
 
+  getAllDoctor() {
+    return BassRequest.get("/users/get-all-doctor", "admin");
+  }
+
   getUserByToken() {
     return BassRequest.get("/users/edit-profile", "admin");
   }

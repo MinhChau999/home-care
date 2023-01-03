@@ -56,7 +56,7 @@
                     <!-- Doctors -->
                     <li class="side-nav-item">
                       <router-link
-                        :to="{ name: 'dashboard' }"
+                        :to="{ name: 'doctor-manager' }"
                         class="side-nav-link"
                         aria-expanded="true"
                         @click="enableSidebar = false"
@@ -68,7 +68,7 @@
                     <!-- Patient -->
                     <li class="side-nav-item">
                       <router-link
-                        :to="{ name: 'dashboard' }"
+                        :to="{ name: 'patient-manager' }"
                         class="side-nav-link"
                         aria-expanded="true"
                         @click="enableSidebar = false"
@@ -93,13 +93,13 @@
                     <!-- Schedules -->
                     <li class="side-nav-item">
                       <router-link
-                        :to="{ name: 'dashboard' }"
+                        :to="{ name: 'clinic-manager' }"
                         class="side-nav-link"
                         aria-expanded="true"
                         @click="enableSidebar = false"
                       >
-                        <i class="mdi mdi-calendar-check-outline"></i>
-                        <span> Shifts </span>
+                        <i class="mdi mdi-home-thermometer"></i>
+                        <span> Clinics </span>
                       </router-link>
                     </li>
                     <!-- Booking -->
@@ -110,8 +110,21 @@
                         aria-expanded="true"
                         @click="enableSidebar = false"
                       >
-                        <i class="mdi mdi-checkbox-multiple-marked-outline"></i>
-                        <span> Bookings </span>
+                        <i class="mdi mdi-truck-check"></i>
+                        <span> Booking Homes</span>
+                      </router-link>
+                    </li>
+
+                    <!-- Booking -->
+                    <li class="side-nav-item">
+                      <router-link
+                        :to="{ name: 'dashboard' }"
+                        class="side-nav-link"
+                        aria-expanded="true"
+                        @click="enableSidebar = false"
+                      >
+                        <i class="mdi mdi-briefcase-check"></i>
+                        <span> Booking Clinics</span>
                       </router-link>
                     </li>
 

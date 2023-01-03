@@ -40,13 +40,24 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   // Admin routes
-  /**
-   * Dashboard routes
-   */
+  // Dashboard
   {
     path: "/admin",
     component: () => import("@/views/admin/DashBoard.vue"),
     name: "dashboard",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  /**
+   * User routes
+   */
+  // User Management
+  {
+    path: "/admin/users",
+    component: () => import("@/views/admin/user/UserManage.vue"),
+    name: "user-manager",
     meta: {
       layout: "admin",
     },
@@ -60,7 +71,6 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-
   // Profile User with ID
   {
     path: "/admin/user/:id",
@@ -88,20 +98,49 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // User Management
-  {
-    path: "/admin/users",
-    component: () => import("@/views/admin/UserManage.vue"),
-    name: "user-manager",
-    meta: {
-      layout: "admin",
-    },
-  },
   // User Create
   {
     path: "/admin/users/create",
     component: () => import("@/views/admin/CreateUserAdmin.vue"),
     name: "user-create",
+    meta: {
+      layout: "admin",
+    },
+  },
+  /**
+   * Doctor routes
+   */
+  // Doctor Management
+  {
+    path: "/admin/doctors",
+    component: () => import("@/views/admin/doctor/DoctorManage.vue"),
+    name: "doctor-manager",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  /**
+   * Patient routes
+   */
+  // Patient Management
+  {
+    path: "/admin/patients",
+    component: () => import("@/views/admin/patient/PatientManage.vue"),
+    name: "patient-manager",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  /**
+   * clinic routes
+   */
+  // clinic Management
+  {
+    path: "/admin/clinics",
+    component: () => import("@/views/admin/clinic/ClinicManage.vue"),
+    name: "clinic-manager",
     meta: {
       layout: "admin",
     },

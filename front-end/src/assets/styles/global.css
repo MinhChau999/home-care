@@ -10667,6 +10667,10 @@ button.bg-dark:focus {
   text-transform: uppercase !important;
 }
 
+.text-first-uppercase:first-letter {
+  text-transform: uppercase !important;
+}
+
 .text-capitalize {
   text-transform: capitalize !important;
 }
@@ -18962,7 +18966,7 @@ body[data-leftbar-theme="dark"] .side-nav .side-nav-forth-level li.active > a {
   --easy-table-rows-per-page-selector-option-padding: 10px;
   --easy-table-scrollbar-track-color: #f0f4f9;
   --easy-table-scrollbar-color: #2d3a4f;
-  --easy-table-scrollbar-thumb-color: #4c5d7a;
+  --easy-table-scrollbar-thumb-color: #89a1caf2;
   --easy-table-scrollbar-corner-color: #515d70;
   --easy-table-loading-mask-background-color: #eef2f7;
 }

@@ -15,7 +15,7 @@
               <li class="breadcrumb-item active">Products</li>
             </ol>
           </div>
-          <h4 class="page-title">Users</h4>
+          <h4 class="page-title text-first-uppercase">{{ title }}</h4>
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@
                 <router-link
                   :to="{ name: 'user-create' }"
                   class="btn btn-danger mb-2"
-                  ><i class="mdi mdi-plus-circle mr-2"></i> Add User
+                  ><i class="mdi mdi-plus-circle mr-2"></i> Add {{ title }}
                 </router-link>
               </div>
               <div class="col-sm-8">
@@ -199,13 +199,13 @@
               show-index
               hide-footer
             >
-              <template #item-name="{ name, avatar, item }">
+              <template #item-name="{ name, avatar, id }">
                 <div class="table-user">
                   <img :src="avatar" class="mr-2 rounded-circle" />
                   <a
                     href="javascript:void(0);"
                     class="text-dark"
-                    @click="viewItem(item)"
+                    @click="viewItem(id)"
                     >{{ name }}</a
                   >
                 </div>
@@ -235,7 +235,7 @@
               <template #item-operation="item">
                 <div class="table-action">
                   <a
-                    @click="viewItem(item)"
+                    @click="viewItem(item.id)"
                     href="javascript:void(0);"
                     class="action-icon"
                   >
@@ -259,8 +259,8 @@
                   role="status"
                   aria-live="polite"
                 >
-                  Showing users
-                  {{ currentPageFirstIndex }} to {{ currentPageLastIndex }} of
+                  Showing {{ title }} {{ currentPageFirstIndex }} to
+                  {{ currentPageLastIndex }} of
                   {{ clientItemsLength }}
                 </div>
               </div>
@@ -347,6 +347,7 @@ export default defineComponent({
   data() {
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
+    const title = "doctor";
 
     const itemsSelected: Item[] = [];
     const headers: Header[] = [
@@ -360,7 +361,7 @@ export default defineComponent({
       { text: "Operation", value: "operation" },
     ];
 
-    const searchName = ["name", "email", "phone", "birthday", "role"];
+    const searchName = ["name", "email", "phone", "birthday"];
 
     const items: Item[] = [];
     // index related
@@ -368,6 +369,7 @@ export default defineComponent({
     const to = 5;
 
     return {
+      title,
       items,
       headers,
       searchField: "name",
@@ -429,7 +431,7 @@ export default defineComponent({
   methods: {
     getAllUser() {
       this.loading = true;
-      UserService.getAllUser()
+      UserService.getAllDoctor()
         .then((response: any) => {
           this.items = response.data.data;
           for (var i in this.items) {
@@ -439,7 +441,8 @@ export default defineComponent({
           this.loading = false;
           // Notification.success(response.data.message);
         })
-        .catch(() => {
+        .catch((errors) => {
+          Notification.error(errors.response.data.message);
           this.items = [];
           this.loading = false;
         });
@@ -483,10 +486,10 @@ export default defineComponent({
       (this.$refs.dataTable as any).prevPage();
       this.changeFromAndTo();
     },
-    viewItem(item: any): void {
+    viewItem(id: any): void {
       this.$router.push({
         name: "edit-userid",
-        params: { id: item.id.toString() },
+        params: { id: id.toString() },
       });
     },
     onClickOutside() {
@@ -495,7 +498,7 @@ export default defineComponent({
       }
     },
     exportData(type: string) {
-      ExcelParser.exportDataFromJSON(this.items, "users", type);
+      ExcelParser.exportDataFromJSON(this.items, this.title, type);
     },
     deleteItem(val: any) {
       if (confirm("Do you really want to delete?")) {
