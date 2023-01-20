@@ -105,7 +105,7 @@
                     <!-- Booking -->
                     <li class="side-nav-item">
                       <router-link
-                        :to="{ name: 'dashboard' }"
+                        :to="{ name: 'booking-home-manager' }"
                         class="side-nav-link"
                         aria-expanded="true"
                         @click="enableSidebar = false"
@@ -118,7 +118,7 @@
                     <!-- Booking -->
                     <li class="side-nav-item">
                       <router-link
-                        :to="{ name: 'dashboard' }"
+                        :to="{ name: 'booking-clinic-manager' }"
                         class="side-nav-link"
                         aria-expanded="true"
                         @click="enableSidebar = false"
@@ -438,7 +438,7 @@
               <a
                 class="nav-link dropdown-toggle nav-user arrow-none mr-0"
                 data-toggle="dropdown"
-                href="#"
+                href="javascript:void(0);"
                 role="button"
                 aria-haspopup="false"
                 :aria-expanded="dropdownProfile"
@@ -651,10 +651,23 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import vClickOutside from "click-outside-vue3";
+import axios from "axios";
 
 export default defineComponent({
   directives: {
     clickOutside: vClickOutside.directive,
+  },
+
+  created() {
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          this.logout();
+        }
+        return Promise.reject(error);
+      }
+    );
   },
 
   computed: {

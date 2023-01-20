@@ -7,6 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/site/LandingPage.vue"),
     name: "landing-page",
   },
+
   {
     path: "/test",
     component: () => import("@/views/HomePage.vue"),
@@ -15,12 +16,14 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
+
   {
     path: "/booking",
     component: () => import("@/views/site/BookingPage.vue"),
     name: "home-page",
     meta: { layout: "site" },
   },
+
   {
     path: "/login",
     meta: {
@@ -53,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
   /**
    * User routes
    */
-  // User Management
+  // user Management
   {
     path: "/admin/users",
     component: () => import("@/views/admin/user/UserManage.vue"),
@@ -62,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // Profile User
+  // profile User
   {
     path: "/admin/profile",
     component: () => import("@/views/admin/ProfileAdmin.vue"),
@@ -71,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // Profile User with ID
+  // profile User with ID
   {
     path: "/admin/user/:id",
     component: () => import("@/views/admin/ProfileAdmin.vue"),
@@ -80,7 +83,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // Support for user
+  // support for user
   {
     path: "/admin/support",
     component: () => import("@/views/admin/SupportFAQ.vue"),
@@ -89,7 +92,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // Edit profile
+  // edit profile
   {
     path: "/admin/profile/edit",
     component: () => import("@/views/admin/EditProfileAdmin.vue"),
@@ -98,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
       layout: "admin",
     },
   },
-  // User Create
+  // user Create
   {
     path: "/admin/users/create",
     component: () => import("@/views/admin/CreateUserAdmin.vue"),
@@ -108,9 +111,9 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   /**
-   * Doctor routes
+   * doctor routes
    */
-  // Doctor Management
+  // doctor Management
   {
     path: "/admin/doctors",
     component: () => import("@/views/admin/doctor/DoctorManage.vue"),
@@ -123,7 +126,7 @@ const routes: Array<RouteRecordRaw> = [
   /**
    * Patient routes
    */
-  // Patient Management
+  // patient Management
   {
     path: "/admin/patients",
     component: () => import("@/views/admin/patient/PatientManage.vue"),
@@ -141,6 +144,39 @@ const routes: Array<RouteRecordRaw> = [
     path: "/admin/clinics",
     component: () => import("@/views/admin/clinic/ClinicManage.vue"),
     name: "clinic-manager",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  /**
+   * Booking routes
+   */
+  // booking home management
+  {
+    path: "/admin/booking-home",
+    component: () => import("@/views/admin/booking/BookingHomeManage.vue"),
+    name: "booking-home-manager",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  // booking home details page
+  {
+    path: "/admin/booking-home/:id",
+    component: () => import("@/views/admin/booking/BookingHomeDetail.vue"),
+    name: "booking-home-detail",
+    meta: {
+      layout: "admin",
+    },
+  },
+
+  // booking home management
+  {
+    path: "/admin/booking-clinic",
+    component: () => import("@/views/admin/booking/BookingClinicManage.vue"),
+    name: "booking-clinic-manager",
     meta: {
       layout: "admin",
     },

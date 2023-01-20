@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BaseController extends Controller
@@ -29,5 +30,9 @@ class BaseController extends Controller
         }
 
         return response()->json($response, $code);
+    }
+
+    public function convertDate($date){
+        return Carbon::createFromFormat("Y-m-d", $date)->format("d/m/Y");
     }
 }

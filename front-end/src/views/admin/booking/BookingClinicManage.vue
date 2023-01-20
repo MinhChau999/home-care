@@ -1,5 +1,5 @@
 <template>
-  <div class="patient-manage">
+  <div class="booking-manage">
     <!-- start page title -->
     <div class="row">
       <div class="col-12">
@@ -114,7 +114,7 @@
                     </select>
                   </div>
                 </div>
-                <!-- <div class="col-md-5">
+                <div class="col-md-5">
                   <span><h5>Status:</h5></span>
                   <div class="customize-rows-per-page">
                     <select
@@ -133,7 +133,7 @@
                       <option value="3">Done</option>
                     </select>
                   </div>
-                </div> -->
+                </div>
               </div>
               <div class="col-md-6 row">
                 <div class="col-md-2"></div>
@@ -229,6 +229,17 @@
               show-index
               hide-footer
             >
+              <template #item-bookingID="{ booking_id }">
+                <a href="javascript:void(0);" class="text-body font-weight-bold"
+                  >#{{ booking_id }}</a
+                >
+              </template>
+              <template #item-date="{ date_booking, time_booking }">
+                {{ convertDate(date_booking)
+                }}<small class="text-muted ml-1">
+                  {{ convertTime(time_booking) }}</small
+                >
+              </template>
               <template #item-name="{ name, avatar, id }">
                 <div class="table-user">
                   <img :src="avatar" class="mr-2 rounded-circle" />
@@ -240,11 +251,32 @@
                   >
                 </div>
               </template>
-              <template #item-email="{ email }">
-                <a class="text-dark" href="mailto:{{email}}">{{ email }}</a>
-              </template>
-              <template #item-phone="{ phone }">
-                <a class="text-dark" href="tel:{{phone}}">{{ phone }}</a>
+              <template #item-status="{ status, statusName }">
+                <h5>
+                  <span
+                    class="badge"
+                    :class="{
+                      'badge-warning-lighten': status == 0,
+                      'badge-info-lighten': status == 1,
+                      'badge-danger-lighten': status == 2,
+                      'badge-success-lighten': status == 3,
+                    }"
+                    ><i
+                      class="mdi"
+                      :class="{
+                        'mdi-timer-sand': status == 0,
+                        'mdi-clock-check-outline': status == 1,
+                        'mdi-cancel': status == 2,
+                        'mdi-check-bold': status == 3,
+                      }"
+                    ></i
+                    >{{ statusName }}</span
+                  >
+                  <span class="badge">
+                    <a href="javascript:void(0);" class="action-icon-mini">
+                      <i class="mdi mdi-square-edit-outline"></i></a
+                  ></span>
+                </h5>
               </template>
               <template #loading>
                 <div class="mt-4">
@@ -366,10 +398,11 @@
 import type { Header, Item } from "vue3-easy-data-table";
 import { defineComponent } from "vue";
 import UserService from "@/services/user.service";
-import PatientService from "@/services/patient.service";
+import BookingService from "@/services/booking.service";
 import ExcelParser from "@/services/export.service";
 import Notification from "@/services/notification.service";
 import vClickOutside from "click-outside-vue3";
+import moment from "moment";
 
 export default defineComponent({
   directives: {
@@ -378,23 +411,28 @@ export default defineComponent({
   data() {
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
-    const title = "patient";
-    const searchField: any = "";
-    const searchValue: any = "";
+    const title = "booking clinic";
 
     const itemsSelected: Item[] = [];
     const headers: Header[] = [
       // { text: "#", value: "id" },
-      { text: "Name", value: "name", sortable: true, width: 180 }, //
-      { text: "Email", value: "email", sortable: true },
-      { text: "Phone", value: "phone", sortable: true },
-      { text: "Gender", value: "gender" },
-      { text: "Birthday", value: "birthday", width: 130 },
-      { text: "Address", value: "address", sortable: true },
+      { text: "ID Booking", value: "bookingID", sortable: true },
+      { text: "Date", value: "date", sortable: true },
+      { text: "Patient", value: "patient", sortable: true },
+      { text: "Service", value: "service", sortable: true },
+      { text: "Doctor", value: "doctor", sortable: true },
+      { text: "Status", value: "status", sortable: true },
       { text: "Operation", value: "operation" },
     ];
 
-    const searchName = ["name", "email", "phone", "birthday", "address"];
+    const searchName = [
+      "date",
+      "patientName",
+      "phone",
+      "birthday",
+      "statusName",
+      "id",
+    ];
 
     const items: Item[] = [];
     // index related
@@ -405,8 +443,8 @@ export default defineComponent({
       title,
       items,
       headers,
-      searchField,
-      searchValue,
+      searchField: "",
+      searchValue: "",
       searchName,
       itemsSelected,
       loading: false,
@@ -464,12 +502,9 @@ export default defineComponent({
   methods: {
     loadData() {
       this.loading = true;
-      PatientService.getAllPatient()
+      BookingService.getAllBookingClinic()
         .then((response: any) => {
           this.items = response.data.data;
-          for (var i in this.items) {
-            this.items[i].gender = this.items[i].gender == 1 ? "Nam" : "Nữ";
-          }
           this.itemsSelected = [];
           this.loading = false;
           // Notification.success(response.data.message);
@@ -491,6 +526,10 @@ export default defineComponent({
         this.to = 5;
       }
     },
+    statusSelect(e: Event): void {
+      this.searchField = "status";
+      this.searchValue = (e.target as HTMLInputElement).value;
+    },
     changeFromAndTo(): void {
       let halfTotalLink = Math.floor(this.linkLimitPage / 2);
       this.from = this.currentPaginationNumber - halfTotalLink;
@@ -506,6 +545,17 @@ export default defineComponent({
         this.from = this.maxPaginationNumber - this.linkLimitPage + 1;
         this.to = this.maxPaginationNumber;
       }
+    },
+    convertTime(time: string) {
+      let date = new Date("1970-01-01 " + time);
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }); // Outputs "02:30 PM"
+    },
+    convertDate(date: string) {
+      return moment(date).format("DD/MM/YYYY"); // Outputs "07/26/2022"
     },
     updatePage(paginationNumber: number): void {
       (this.$refs.dataTable as any).updatePage(paginationNumber);

@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class BookingHomeSeeder extends Seeder
 {
@@ -26,6 +27,7 @@ class BookingHomeSeeder extends Seeder
         $userArray = User::query()->where('role', UserRoleEnum::Doctor)->pluck('id')->toArray();
         for ($i = 0; $i < 150; $i++) {
             $arr[] = [
+                'booking_id' => "BH".Str::random(8),
                 'patient_id' => $faker->randomElement($patientArray),
                 'doctor_id' => $faker->randomElement($userArray),
                 'service_id' => $faker->randomElement($serviceArray),

@@ -25,7 +25,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <div class="row mb-2">
+            <div class="row mb-1">
               <div class="col-sm-4">
                 <router-link
                   :to="{ name: 'user-create' }"
@@ -35,8 +35,12 @@
               </div>
               <div class="col-sm-8">
                 <div class="text-sm-right">
-                  <button type="button" class="btn btn-success mb-2 mr-1">
-                    <i class="mdi mdi-settings"></i>
+                  <button
+                    type="button"
+                    @click="loadData"
+                    class="btn btn-primary mb-2 mr-1"
+                  >
+                    <i class="mdi mdi-autorenew"></i>
                   </button>
                   <button type="button" class="btn btn-light mb-2 mr-1">
                     Import
@@ -93,13 +97,13 @@
                 </div>
               </div>
             </div>
-            <div class="row mb-1">
-              <div class="col-sm-12 col-md-5 row">
-                <div class="form-group col-sm-8">
-                  <span>Rows per page: </span>
+            <div class="row mb-3">
+              <div class="col-md-6 row">
+                <div class="col-md-4">
+                  <span><h5>Rows per page:</h5></span>
                   <div class="customize-rows-per-page">
                     <select
-                      class="select-items form-control col-sm-9"
+                      class="select-items form-control custom-select"
                       @change="updateRowsPerPageSelect"
                     >
                       <option value="5">5</option>
@@ -110,12 +114,37 @@
                     </select>
                   </div>
                 </div>
+                <!-- <div class="col-md-5">
+                  <span><h5>Status:</h5></span>
+                  <div class="customize-rows-per-page">
+                    <select
+                      class="select-items form-control custom-select"
+                      @change="
+                        (event) => (
+                          (searchField = 'status'),
+                          (searchValue = event.target.value)
+                        )
+                      "
+                    >
+                      <option value="">-- Choose --</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
+                </div> -->
               </div>
-              <div class="col-sm-12 col-md-7 row">
-                <div class="col-sm-4"></div>
-                <div class="form-group col-sm-3">
-                  <span>Field: </span>
-                  <select v-model="searchField" class="form-control">
+              <div class="col-md-6 row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                  <span><h5>Field:</h5></span>
+                  <select
+                    v-model="searchField"
+                    class="form-control custom-select"
+                    @change="searchValue = ''"
+                  >
+                    <option value="">-- Choose --</option>
                     <option
                       v-for="item in searchName"
                       v-bind:key="item"
@@ -125,12 +154,13 @@
                     </option>
                   </select>
                 </div>
-                <div class="form-group col-sm-5">
-                  <span>Search: </span>
+                <div class="col-md-6">
+                  <span><h5>Search:</h5></span>
                   <input
                     class="form-control"
                     type="text"
-                    v-model="searchValue"
+                    placeholder="Search..."
+                    @input="(event) => (searchValue = event.target.value)"
                   />
                 </div>
               </div>
@@ -348,6 +378,8 @@ export default defineComponent({
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
     const title = "user";
+    const searchField: any = "";
+    const searchValue: any = "";
 
     const itemsSelected: Item[] = [];
     const headers: Header[] = [
@@ -372,8 +404,8 @@ export default defineComponent({
       title,
       items,
       headers,
-      searchField: "name",
-      searchValue: "",
+      searchField,
+      searchValue,
       searchName,
       itemsSelected,
       loading: false,
@@ -384,7 +416,7 @@ export default defineComponent({
     };
   },
   async mounted() {
-    await this.getAllUser();
+    await this.loadData();
   },
 
   computed: {
@@ -429,7 +461,7 @@ export default defineComponent({
     },
   },
   methods: {
-    getAllUser() {
+    loadData() {
       this.loading = true;
       UserService.getAllUser()
         .then((response: any) => {

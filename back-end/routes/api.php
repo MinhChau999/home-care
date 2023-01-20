@@ -82,18 +82,18 @@ Route::group([
 Route::group([
    'as' => 'bookings.',
    'prefix' => 'bookings',
-   // 'middleware' => 'role:doctor',
+   // 'middleware' => 'role:admin',
 ], function () {
-   // Get data from user
+   // Get data from booking
    Route::get('/get-all-booking-homes', [ApiBookingController::class, 'getAllBookingHomes'])->name('getAllBookingHomes');
    Route::get('/get-all-booking-clinics', [ApiBookingController::class, 'getAllBookingClinics'])->name('getAllBookingClinics');
    
    // CRUD
    Route::post('/store', [ApiUserController::class, 'store'])->name('store');
-   Route::get('/edit/{user}', [ApiUserController::class, 'edit'])->name('edit');
+   Route::get('/edit-booking-home/{booking}', [ApiBookingController::class, 'editBookingHome'])->name('editBookingHome');
    Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
-   Route::put('/users/update-password/{user}', [ApiUserController::class, 'updatePassword'])->name('updatePassword');
-   Route::delete('/destroy/{user}', [ApiUserController::class, 'destroy'])->name('destroy');
+   Route::put('/update-status-booking-home/{booking}', [ApiBookingController::class, 'updateStatusBookingHome'])->name('updateStatusBookingHomeF');
+   Route::delete('/destroy-booking-home/{booking}', [ApiBookingController::class, 'destroyBookingHome'])->name('destroyBookingHome');
 });
 
 
@@ -116,4 +116,5 @@ Route::group([
    // 'middleware' => 'role:admin',
 ], function () {
    Route::get('/roles', [ApiEnumController::class, 'getRoleUser'])->name('getRoleUser');
+   Route::get('/status-booking', [ApiEnumController::class, 'getStatusBooking'])->name('getStatusBooking');
 });

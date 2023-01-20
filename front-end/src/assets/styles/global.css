@@ -3294,6 +3294,9 @@ fieldset:disabled a.btn {
 }
 .btn-outline-success:focus,
 .btn-outline-success.focus {
+  color: #fff;
+  background-color: #10c469;
+  border-color: #10c469;
   -webkit-box-shadow: 0 0 0 0.15rem rgba(16, 196, 105, 0.5);
   box-shadow: 0 0 0 0.15rem rgba(16, 196, 105, 0.5);
 }
@@ -3327,6 +3330,9 @@ fieldset:disabled a.btn {
 }
 .btn-outline-info:focus,
 .btn-outline-info.focus {
+  color: #fff;
+  background-color: #35b8e0;
+  border-color: #35b8e0;
   -webkit-box-shadow: 0 0 0 0.15rem rgba(53, 184, 224, 0.5);
   box-shadow: 0 0 0 0.15rem rgba(53, 184, 224, 0.5);
 }
@@ -3360,6 +3366,9 @@ fieldset:disabled a.btn {
 }
 .btn-outline-warning:focus,
 .btn-outline-warning.focus {
+  color: #fff;
+  background-color: #f9c851;
+  border-color: #f9c851;
   -webkit-box-shadow: 0 0 0 0.15rem rgba(249, 200, 81, 0.5);
   box-shadow: 0 0 0 0.15rem rgba(249, 200, 81, 0.5);
 }
@@ -3393,6 +3402,9 @@ fieldset:disabled a.btn {
 }
 .btn-outline-danger:focus,
 .btn-outline-danger.focus {
+  color: #fff;
+  background-color: #ff5b5b;
+  border-color: #ff5b5b;
   -webkit-box-shadow: 0 0 0 0.15rem rgba(255, 91, 91, 0.5);
   box-shadow: 0 0 0 0.15rem rgba(255, 91, 91, 0.5);
 }
@@ -14027,6 +14039,14 @@ h6 {
   height: 0.2em;
   background-color: #536de6;
 }
+
+.horizontal-steps .disregard-line {
+  display: block;
+  position: absolute;
+  width: 50%;
+  height: 0.2em;
+  background-color: #ff0f0f;
+}
 .horizontal-steps .horizontal-steps-content {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -14062,9 +14082,17 @@ h6 {
 .horizontal-steps .horizontal-steps-content .step-item:first-child {
   margin-left: 0;
 }
+/* .horizontal-steps .horizontal-steps-content .step-item:nth-last-child(2) {
+  color: #ff0f0f;
+} */
 .horizontal-steps .horizontal-steps-content .step-item:last-child {
   margin-right: 0;
   color: #10c469;
+}
+
+.horizontal-steps .horizontal-steps-content .step-item.danger {
+  margin-right: 0;
+  color: #ff0f0f;
 }
 .horizontal-steps .horizontal-steps-content .step-item span {
   position: absolute;
@@ -18907,6 +18935,12 @@ body[data-leftbar-theme="dark"] .side-nav .side-nav-forth-level li.active > a {
   font-size: 1.2rem;
   display: inline-block;
   padding: 0 3px;
+}
+
+.action-icon-mini {
+  color: #98a6ad;
+  font-size: 0.85rem;
+  display: inline-block;
 }
 
 .action-icon:hover {

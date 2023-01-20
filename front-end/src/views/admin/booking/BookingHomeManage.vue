@@ -1,5 +1,5 @@
 <template>
-  <div class="patient-manage">
+  <div class="booking-manage">
     <!-- start page title -->
     <div class="row">
       <div class="col-12">
@@ -41,9 +41,6 @@
                     class="btn btn-primary mb-2 mr-1"
                   >
                     <i class="mdi mdi-autorenew"></i>
-                  </button>
-                  <button type="button" class="btn btn-light mb-2 mr-1">
-                    Import
                   </button>
                   <div class="btn-group mb-2">
                     <button
@@ -114,7 +111,7 @@
                     </select>
                   </div>
                 </div>
-                <!-- <div class="col-md-5">
+                <div class="col-md-5">
                   <span><h5>Status:</h5></span>
                   <div class="customize-rows-per-page">
                     <select
@@ -133,7 +130,7 @@
                       <option value="3">Done</option>
                     </select>
                   </div>
-                </div> -->
+                </div>
               </div>
               <div class="col-md-6 row">
                 <div class="col-md-2"></div>
@@ -229,22 +226,82 @@
               show-index
               hide-footer
             >
-              <template #item-name="{ name, avatar, id }">
+              <template #item-bookingID="{ booking, id }">
+                <a
+                  href="javascript:void(0);"
+                  @click="viewItem(id)"
+                  class="text-body font-weight-bold"
+                  >#{{ booking }}</a
+                >
+              </template>
+              <template #item-patient="{ patient, patient_avatar, patient_id }">
                 <div class="table-user">
-                  <img :src="avatar" class="mr-2 rounded-circle" />
+                  <img :src="patient_avatar" class="mr-2 rounded-circle" />
                   <a
                     href="javascript:void(0);"
                     class="text-dark"
-                    @click="viewItem(id)"
-                    >{{ name }}</a
+                    @click="viewPatient(patient_id)"
+                    >{{ patient }}</a
                   >
                 </div>
               </template>
-              <template #item-email="{ email }">
-                <a class="text-dark" href="mailto:{{email}}">{{ email }}</a>
+              <template #item-service="{ service, service_id }">
+                <div class="table-user">
+                  <a
+                    href="javascript:void(0);"
+                    class="text-dark"
+                    @click="viewService(service_id)"
+                    >{{ service }}</a
+                  >
+                </div>
               </template>
-              <template #item-phone="{ phone }">
-                <a class="text-dark" href="tel:{{phone}}">{{ phone }}</a>
+              <template #item-doctor="{ doctor, doctor_avatar, doctor_id }">
+                <div class="table-user">
+                  <img :src="doctor_avatar" class="mr-2 rounded-circle" />
+                  <a
+                    href="javascript:void(0);"
+                    class="text-dark"
+                    @click="viewDoctor(doctor_id)"
+                    >{{ doctor }}</a
+                  >
+                </div>
+              </template>
+              <template #item-date="{ date, time }">
+                {{ date
+                }}<small class="text-muted ml-1">
+                  {{ convertTime(time) }}</small
+                >
+              </template>
+              <template #item-status="{ id, status, statusName }">
+                <h5>
+                  <span
+                    class="badge"
+                    :class="{
+                      'badge-warning-lighten': status == 0,
+                      'badge-info-lighten': status == 1,
+                      'badge-danger-lighten': status == 2,
+                      'badge-success-lighten': status == 3,
+                    }"
+                    ><i
+                      class="mdi"
+                      :class="{
+                        'mdi-timer-sand': status == 0,
+                        'mdi-clock-check-outline': status == 1,
+                        'mdi-cancel': status == 2,
+                        'mdi-check-bold': status == 3,
+                      }"
+                    ></i
+                    >{{ statusName }}</span
+                  >
+                  <span class="badge">
+                    <a
+                      href="javascript:void(0);"
+                      class="action-icon-mini"
+                      @click="modalStatus.setIdModal(id, status)"
+                    >
+                      <i class="mdi mdi-square-edit-outline"></i></a
+                  ></span>
+                </h5>
               </template>
               <template #loading>
                 <div class="mt-4">
@@ -358,6 +415,106 @@
       <!-- end col -->
     </div>
     <!-- end row -->
+
+    <transition name="modal-status">
+      <!-- @click="showModal = false" -->
+      <div
+        v-if="modalStatus.showModal"
+        id="standard-modal"
+        class="modal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="standard-modalLabel"
+        aria-modal="true"
+        style="padding-right: 17px; display: block"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content dropdown-menu-animated" @click.stop>
+            <div class="modal-header">
+              <h4 class="modal-title" id="standard-modalLabel">
+                Change Status
+              </h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-hidden="true"
+                @click="modalStatus.showModal = false"
+              >
+                ×
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="button-list">
+                <button
+                  type="button"
+                  class="btn btn-outline-warning btn-rounded"
+                  :class="{ focus: modalStatus.status == 0 }"
+                  @click="modalStatus.status = 0"
+                >
+                  <i class="mdi mdi-timer-sand"></i> Waiting
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-info btn-rounded"
+                  :class="{ focus: modalStatus.status == 1 }"
+                  @click="modalStatus.status = 1"
+                >
+                  <i class="mdi mdi-clock-check-outline"></i> Accept
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-success btn-rounded"
+                  :class="{ focus: modalStatus.status == 3 }"
+                  @click="modalStatus.status = 3"
+                >
+                  <i class="mdi mdi-check-bold"></i> Done
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-rounded"
+                  :class="{ focus: modalStatus.status == 2 }"
+                  @click="modalStatus.status = 2"
+                >
+                  <i class="mdi mdi-cancel"></i> Reject
+                </button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <!-- pending -->
+              <div class="form-group mb-0 text-center">
+                <div
+                  :class="{
+                    'spinner-border text-primary': modalStatus.isPendingStatus,
+                  }"
+                  role="status"
+                ></div>
+              </div>
+              <!-- end pending  -->
+              <button
+                type="button"
+                class="btn btn-light"
+                data-dismiss="modal"
+                @click="modalStatus.showModal = false"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="saveChangeStatus"
+              >
+                <i class="mdi mdi-content-save"></i> Save
+              </button>
+            </div>
+          </div>
+
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    </transition>
   </div>
   <!-- End Content -->
 </template>
@@ -365,11 +522,18 @@
 <script lang="ts">
 import type { Header, Item } from "vue3-easy-data-table";
 import { defineComponent } from "vue";
-import UserService from "@/services/user.service";
-import PatientService from "@/services/patient.service";
+import BookingService from "@/services/booking.service";
 import ExcelParser from "@/services/export.service";
 import Notification from "@/services/notification.service";
 import vClickOutside from "click-outside-vue3";
+import moment from "moment";
+
+interface modalStatus {
+  showModal: boolean;
+  isPendingStatus: boolean;
+  idModal: any;
+  status: any;
+}
 
 export default defineComponent({
   directives: {
@@ -378,23 +542,35 @@ export default defineComponent({
   data() {
     // const sortBy: string[] = ["number", "weight"];
     // const sortType: SortType[] = ["desc", "asc"];
-    const title = "patient";
+    const title = "booking home";
     const searchField: any = "";
     const searchValue: any = "";
 
     const itemsSelected: Item[] = [];
     const headers: Header[] = [
       // { text: "#", value: "id" },
-      { text: "Name", value: "name", sortable: true, width: 180 }, //
-      { text: "Email", value: "email", sortable: true },
-      { text: "Phone", value: "phone", sortable: true },
-      { text: "Gender", value: "gender" },
-      { text: "Birthday", value: "birthday", width: 130 },
-      { text: "Address", value: "address", sortable: true },
+      { text: "ID Booking", value: "bookingID", sortable: true },
+      { text: "Date", value: "date", sortable: true },
+      { text: "Patient", value: "patient", sortable: true },
+      { text: "Service", value: "service", sortable: true },
+      { text: "Doctor", value: "doctor", sortable: true },
+      { text: "Status", value: "status", sortable: true },
       { text: "Operation", value: "operation" },
     ];
 
-    const searchName = ["name", "email", "phone", "birthday", "address"];
+    const searchName = ["booking", "date", "patient", "doctor", "service"];
+
+    const modalStatus = {
+      showModal: false,
+      isPendingStatus: false,
+      idModal: "",
+      status: "",
+      setIdModal: function (id: any, status: any) {
+        this.showModal = true;
+        this.idModal = id;
+        this.status = status;
+      },
+    } as modalStatus;
 
     const items: Item[] = [];
     // index related
@@ -409,6 +585,7 @@ export default defineComponent({
       searchValue,
       searchName,
       itemsSelected,
+      modalStatus,
       loading: false,
       linkLimitPage: 5,
       from,
@@ -464,12 +641,9 @@ export default defineComponent({
   methods: {
     loadData() {
       this.loading = true;
-      PatientService.getAllPatient()
+      BookingService.getAllBookingHome()
         .then((response: any) => {
           this.items = response.data.data;
-          for (var i in this.items) {
-            this.items[i].gender = this.items[i].gender == 1 ? "Nam" : "Nữ";
-          }
           this.itemsSelected = [];
           this.loading = false;
           // Notification.success(response.data.message);
@@ -491,6 +665,37 @@ export default defineComponent({
         this.to = 5;
       }
     },
+
+    saveChangeStatus: function () {
+      this.modalStatus.isPendingStatus = true;
+      BookingService.updateStatusBookingHome(
+        {
+          status: this.modalStatus.status,
+        },
+        this.modalStatus.idModal
+      )
+        .then((response: any) => {
+          this.modalStatus.isPendingStatus = false;
+          this.modalStatus.showModal = false;
+          let result: any = this.items
+            .map((el, index) => ({ el, index }))
+            .find((x) => x.el.id == this.modalStatus.idModal);
+          result.el.status = response.data.data.status;
+          result.el.statusName = response.data.data.statusName;
+          this.items.splice(result.index, 1, result.el);
+          Notification.success(response.data.message);
+        })
+        .catch((errors) => {
+          Notification.error(errors.response.data.message);
+          this.modalStatus.isPendingStatus = false;
+        });
+    },
+
+    statusSelect(e: Event): void {
+      this.searchField = "status";
+      this.searchValue = (e.target as HTMLInputElement).value;
+    },
+
     changeFromAndTo(): void {
       let halfTotalLink = Math.floor(this.linkLimitPage / 2);
       this.from = this.currentPaginationNumber - halfTotalLink;
@@ -507,6 +712,18 @@ export default defineComponent({
         this.to = this.maxPaginationNumber;
       }
     },
+
+    convertTime(time: string) {
+      let date = new Date("1970-01-01 " + time);
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }); // Outputs "02:30 PM"
+    },
+    convertDate(date: string) {
+      return moment(date).format("DD/MM/YYYY"); // Outputs "07/26/2022"
+    },
     updatePage(paginationNumber: number): void {
       (this.$refs.dataTable as any).updatePage(paginationNumber);
       this.changeFromAndTo();
@@ -519,9 +736,24 @@ export default defineComponent({
       (this.$refs.dataTable as any).prevPage();
       this.changeFromAndTo();
     },
-    viewItem(id: any): void {
+    viewDoctor(id: any): void {
       this.$router.push({
         name: "edit-userid",
+        params: { id: id.toString() },
+      });
+    },
+    viewPatient(id: any): void {
+      console.log(id);
+    },
+    viewService(id: any): void {
+      console.log(id);
+    },
+    viewItem(id: any): void {
+      console.log(id);
+      console.log(this.items.find((x) => x.id == 9));
+
+      this.$router.push({
+        name: "booking-home-detail",
         params: { id: id.toString() },
       });
     },
@@ -535,23 +767,16 @@ export default defineComponent({
     },
     deleteItem(val: any) {
       if (confirm("Do you really want to delete?")) {
-        const id: any = this.$store.state.authAdmin.admin.id;
-        const role: any = this.$store.state.authAdmin.admin.role;
-        if (id == val.id) {
-          Notification.error("Xóa thất bại");
-          return false;
-        }
-        if (role != 0) {
-          Notification.error("Xóa thất bại");
-          return false;
-        }
-        this.items = this.items.filter((item) => item.id !== val.id);
-        UserService.deleteUser(val.id)
-          .then(() => {
-            Notification.success("Xóa thành công");
+        this.loading = true;
+        BookingService.deleteBookingHome(val.id)
+          .then((response) => {
+            this.loading = false;
+            this.items = this.items.filter((item) => item.id !== val.id);
+            Notification.success(response.data.message);
           })
-          .catch(() => {
-            Notification.error("Xóa thất bại");
+          .catch((errors) => {
+            this.loading = false;
+            Notification.error(errors.response.data.message);
           });
       }
     },

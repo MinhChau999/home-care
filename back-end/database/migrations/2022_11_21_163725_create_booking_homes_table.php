@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('booking_homes', function (Blueprint $table) {
             $table->id();
+            $table->string('booking_id')->unique();
             $table->foreignId('patient_id')->constrained();
             $table->foreignId('doctor_id')->constrained('users')->nullable();
             $table->foreignId('service_id')->constrained();

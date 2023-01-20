@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Models\Service;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class BookingClinicSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class BookingClinicSeeder extends Seeder
         $serviceArray = Service::query()->pluck('id')->toArray();
         for ($i = 0; $i < 150; $i++) {
             $arr[] = [
+                'booking_id' => "BC".Str::random(8),
                 'patient_id' => $faker->randomElement($patientArray),
                 'doctor_clinic_id' => $faker->randomElement($doctorClinicArray),
                 'service_id' => $faker->randomElement($serviceArray),
