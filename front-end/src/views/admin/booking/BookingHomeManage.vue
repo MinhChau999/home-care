@@ -61,32 +61,32 @@
                     >
                       <a
                         class="dropdown-item"
-                        href="#"
+                        href="javascript: void(0);"
                         @click="exportData('html')"
                         >html</a
                       >
                       <a
                         class="dropdown-item"
                         @click="exportData('json')"
-                        href="#"
+                        href="javascript: void(0);"
                         >json</a
                       >
                       <a
                         class="dropdown-item"
                         @click="exportData('txt')"
-                        href="#"
+                        href="javascript: void(0);"
                         >txt</a
                       >
                       <a
                         class="dropdown-item"
                         @click="exportData('csv')"
-                        href="#"
+                        href="javascript: void(0);"
                         >csv</a
                       >
                       <a
                         class="dropdown-item"
                         @click="exportData('xls')"
-                        href="#"
+                        href="javascript: void(0);"
                         >xls</a
                       >
                     </div>

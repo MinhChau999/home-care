@@ -21,6 +21,7 @@
         </div>
       </div>
       <!-- end page title -->
+
       <div class="status">
         <div class="row justify-content-center" v-if="loading">
           <div class="mt-3 mb-2 pb-5">
@@ -113,91 +114,148 @@
       <!-- end row -->
 
       <div class="row">
+        <!-- start booking -->
         <div class="col-lg-8">
           <div class="card">
-            <div class="card-body">
-              <h4 class="header-title mb-3">Items from Order #12537</h4>
+            <div class="card-body" style="min-height: 290px">
+              <div class="float-right">
+                <a
+                  href="javascript: void(0);"
+                  class="dropdown-toggle arrow-none card-drop p-0"
+                  data-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="mdi mdi-square-edit-outline"></i>
+                </a>
+              </div>
+              <h4 class="header-title mb-3">
+                Items from Booking #{{ booking.booking_id }}
+              </h4>
               <!-- end table-responsive -->
-
-              <ul class="list-unstyled mb-0">
-                <li>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Payment Type:</span>
-                    Credit Card
-                  </p>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Provider:</span> Visa
-                    ending in 2851
-                  </p>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Valid Date:</span>
-                    02/2020
-                  </p>
-                  <p class="mb-0">
-                    <span class="font-weight-bold mr-2">CVV:</span> xxx
-                  </p>
-                </li>
-              </ul>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Time Booking:</div>
+                <div class="col-sm-10">
+                  {{
+                    convertTime(booking.time_booking) +
+                    ", " +
+                    convertDate2(booking.date_booking)
+                  }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Date Created:</div>
+                <div class="col-sm-10">
+                  {{ convertDate2(booking.created_at) }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Contact Email:</div>
+                <div class="col-sm-10">
+                  {{ booking.email_notification }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Address:</div>
+                <div class="col-sm-10">
+                  {{ booking.address }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Price:</div>
+                <div class="col-sm-10">
+                  {{ booking.price + " " + "đ" }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-2">Description:</div>
+                <div class="col-sm-10">
+                  {{ booking.description }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <!-- end col -->
+        <!-- end booking -->
 
+        <!-- start service -->
         <div class="col-lg-4">
           <div class="card">
-            <div class="card-body">
-              <h4 class="header-title mb-3">Order Summary</h4>
-
-              <div class="table-responsive">
-                <table class="table mb-0">
-                  <thead class="thead-light">
-                    <tr>
-                      <th>Description</th>
-                      <th>Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Grand Total :</td>
-                      <td>$1641</td>
-                    </tr>
-                    <tr>
-                      <td>Shipping Charge :</td>
-                      <td>$23</td>
-                    </tr>
-                    <tr>
-                      <td>Estimated Tax :</td>
-                      <td>$19.22</td>
-                    </tr>
-                    <tr>
-                      <th>Total :</th>
-                      <th>$1683.22</th>
-                    </tr>
-                  </tbody>
-                </table>
+            <div
+              class="card-body"
+              style="position: relative; min-height: 290px"
+            >
+              <div class="text-center">
+                <GoogleMap
+                  api-key="AIzaSyBmLYZH9ibuYWJzq2qDDC0SMHLwzQOEwiE"
+                  :center="{ lat: -34.397, lng: 150.644 }"
+                  :zoom="8"
+                  style="width: 100%; height: 250px"
+                >
+                </GoogleMap>
               </div>
-              <!-- end table-responsive -->
             </div>
           </div>
         </div>
-        <!-- end col -->
+        <!-- end service -->
       </div>
-      <!-- end row -->
+      <!-- end booking -->
 
       <div class="row">
         <div class="col-lg-4">
           <div class="card">
-            <div class="card-body">
-              <h4 class="header-title mb-3">Shipping Information</h4>
+            <div class="card-body" style="min-height: 250px">
+              <div class="mb-3">
+                <div class="float-right">
+                  <a
+                    href="javascript: void(0);"
+                    class="dropdown-toggle arrow-none card-drop p-0"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="mdi mdi-square-edit-outline"></i>
+                  </a>
+                </div>
+                <router-link
+                  :to="{
+                    name: 'edit-userid',
+                    params: { id: doctor.id ? doctor.id : 1 },
+                  }"
+                >
+                  <h4 class="header-title" :style="{ color: '#6c757d' }">
+                    Doctor Information
+                  </h4>
+                </router-link>
+                <!-- <h4
+                class="header-title mb-3"
+                :style="{ cursor: 'pointer' }"
+                @click="viewDoctor"
+              >
+                Doctor Information
+              </h4> -->
+              </div>
 
-              <h5>Stanley Jones</h5>
-
-              <address class="mb-0 font-14 address-lg">
-                795 Folsom Ave, Suite 600<br />
-                San Francisco, CA 94107<br />
-                <abbr title="Phone">P:</abbr> (123) 456-7890 <br />
-                <abbr title="Mobile">M:</abbr> (+01) 12345 67890
-              </address>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Name:</div>
+                <div class="col-sm-9">
+                  {{ doctor.name }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Phone:</div>
+                <div class="col-sm-9">
+                  {{ doctor.phone }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Email:</div>
+                <div class="col-sm-9">
+                  {{ doctor.email }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Special:</div>
+                <div class="col-sm-9"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -205,28 +263,59 @@
 
         <div class="col-lg-4">
           <div class="card">
-            <div class="card-body">
-              <h4 class="header-title mb-3">Billing Information</h4>
+            <div class="card-body" style="min-height: 250px">
+              <div class="mb-3">
+                <div class="float-right">
+                  <a
+                    href="javascript: void(0);"
+                    class="dropdown-toggle arrow-none card-drop p-0"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="mdi mdi-square-edit-outline"></i>
+                  </a>
+                </div>
+                <router-link
+                  :to="{
+                    name: 'edit-userid',
+                    params: { id: doctor.id ? doctor.id : 1 },
+                  }"
+                >
+                  <h4 class="header-title" :style="{ color: '#6c757d' }">
+                    Patient Information
+                  </h4>
+                </router-link>
+              </div>
 
-              <ul class="list-unstyled mb-0">
-                <li>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Payment Type:</span>
-                    Credit Card
-                  </p>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Provider:</span> Visa
-                    ending in 2851
-                  </p>
-                  <p class="mb-2">
-                    <span class="font-weight-bold mr-2">Valid Date:</span>
-                    02/2020
-                  </p>
-                  <p class="mb-0">
-                    <span class="font-weight-bold mr-2">CVV:</span> xxx
-                  </p>
-                </li>
-              </ul>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Name:</div>
+                <div class="col-sm-9">
+                  {{ patient.name }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Phone:</div>
+                <div class="col-sm-9">
+                  {{ patient.phone }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Email:</div>
+                <div class="col-sm-9">
+                  {{ patient.email }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Age:</div>
+                <div class="col-sm-9">
+                  {{
+                    getAge(patient.birthday) +
+                    " tuổi (" +
+                    convertDate(patient.birthday) +
+                    ")"
+                  }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -234,14 +323,51 @@
 
         <div class="col-lg-4">
           <div class="card">
-            <div class="card-body">
-              <h4 class="header-title mb-3">Delivery Info</h4>
+            <div class="card-body" style="min-height: 250px">
+              <div class="mb-3">
+                <div class="float-right">
+                  <a
+                    href="javascript: void(0);"
+                    class="dropdown-toggle arrow-none card-drop p-0"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="mdi mdi-square-edit-outline"></i>
+                  </a>
+                </div>
+                <router-link
+                  :to="{
+                    name: 'edit-userid',
+                    params: { id: doctor.id ? doctor.id : 1 },
+                  }"
+                >
+                  <h4 class="header-title" :style="{ color: '#6c757d' }">
+                    Service Information
+                  </h4>
+                </router-link>
+              </div>
 
-              <div class="text-center">
-                <i class="mdi mdi-truck-fast h2 text-muted"></i>
-                <h5><b>UPS Delivery</b></h5>
-                <p class="mb-1"><b>Order ID :</b> xxxx235</p>
-                <p class="mb-0"><b>Payment Mode :</b> COD</p>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Name:</div>
+                <div class="col-sm-9">
+                  {{ service.name }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Specialist</div>
+                <div class="col-sm-9">
+                  {{ specialist.name }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Price</div>
+                <div class="col-sm-9">
+                  {{ service.price + " đ" }}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="font-weight-bold col-sm-3">Image:</div>
+                <div class="col-sm-9"></div>
               </div>
             </div>
           </div>
@@ -360,6 +486,8 @@ import BookingService from "@/services/booking.service";
 import Notification from "@/services/notification.service";
 import vClickOutside from "click-outside-vue3";
 import moment from "moment";
+import { GoogleMap } from "vue3-google-map";
+import { YOUR_GOOGLE_MAPS_API_KEY } from "@/constants";
 
 interface modalStatus {
   showModal: boolean;
@@ -372,6 +500,7 @@ export default defineComponent({
   directives: {
     clickOutside: vClickOutside.directive,
   },
+  components: { GoogleMap },
   data() {
     const title = "booking home";
     const booking: any = "";
@@ -422,7 +551,8 @@ export default defineComponent({
           this.service = response.data.data.service;
           this.specialist = response.data.data.specialist;
           this.loading = false;
-          // Notification.success(response.data.message);
+          Notification.success(response.data.message);
+          console.log(response.data.data);
         })
         .catch((errors) => {
           Notification.error(errors.response.data.message);
@@ -466,10 +596,18 @@ export default defineComponent({
       return moment(date).format("DD/MM/YYYY"); // Outputs "07/26/2022"
     },
 
-    viewDoctor(id: any): void {
+    convertDate2(date: string) {
+      return moment(date).format("dddd, MMMM Do YYYY"); // Outputs "07/26/2022"
+    },
+
+    getAge(date: string) {
+      return moment().diff(moment(date), "years");
+    },
+
+    viewDoctor(): void {
       this.$router.push({
         name: "edit-userid",
-        params: { id: id.toString() },
+        params: { id: this.doctor.id.toString() },
       });
     },
 
