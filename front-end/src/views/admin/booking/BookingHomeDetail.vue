@@ -113,7 +113,7 @@
 
       <!-- end row -->
 
-      <div class="row">
+      <div class="row" v-if="loadDataFlag">
         <!-- start booking -->
         <div class="col-lg-8">
           <div class="card">
@@ -187,9 +187,9 @@
               <div class="text-center">
                 <GoogleMap
                   api-key="AIzaSyBmLYZH9ibuYWJzq2qDDC0SMHLwzQOEwiE"
-                  :center="{ lat: -34.397, lng: 150.644 }"
-                  :zoom="8"
-                  style="width: 100%; height: 250px"
+                  :center="{ lat: 10.647291, lng: 107.245695 }"
+                  :zoom="11"
+                  style="width: 100%; height: 240px"
                 >
                 </GoogleMap>
               </div>
@@ -200,7 +200,7 @@
       </div>
       <!-- end booking -->
 
-      <div class="row">
+      <div class="row" v-if="loadDataFlag">
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body" style="min-height: 250px">
@@ -527,6 +527,7 @@ export default defineComponent({
       loading: false,
       linkLimitPage: 5,
       showExport: false,
+      loadDataFlag: false,
     };
   },
 
@@ -551,8 +552,8 @@ export default defineComponent({
           this.service = response.data.data.service;
           this.specialist = response.data.data.specialist;
           this.loading = false;
+          this.loadDataFlag = true;
           Notification.success(response.data.message);
-          console.log(response.data.data);
         })
         .catch((errors) => {
           Notification.error(errors.response.data.message);

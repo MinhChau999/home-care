@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBookingRequest;
 use App\Http\Requests\UpdateStatusBookingRequest;
 use App\Models\BookingClinic;
 use App\Models\BookingHome;
+use App\Models\DoctorClinic;
 use App\Models\Patient;
 use App\Models\Service;
 use App\Models\Specialist;
@@ -12,6 +14,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ApiBookingController extends BaseController
 {
@@ -91,6 +94,62 @@ class ApiBookingController extends BaseController
     }
 
     // CRUD functions
+    public function store(StoreBookingRequest $request)
+    {
+        try {
+            if ($request->get('type_booking') == 0) {
+                $arr = $request->only([
+                    "doctor_id",
+                    "service_id",
+                    "date_booking",
+                    "time_booking",
+                    "email_notification",
+                    "patient_name_booking",
+                    "patient_phone_booking",
+                    "patient_birth_booking",
+                    "address",
+                    "price",
+                    "description",
+                ]);
+                if($request->get('is_guest') == 0){
+                    $arr["patient_id"] = $request->get('patient_id');
+                }
+                $arr['booking_id'] = "BH" . Str::random(8);
+
+                $booking = new BookingHome();
+                $booking->fill($arr);
+                $booking->save();
+                return $this->sendRespone($booking, "Successfully created");
+            } else if ($request->get('type_booking') == 1) {
+                $doctorId = $request->get('doctor_id');
+                $clinicId = $request->get('clinic_id');
+                $arr = $request->only([
+                    "service_id",
+                    "date_booking",
+                    "time_booking",
+                    "email_notification",
+                    "patient_name_booking",
+                    "patient_phone_booking",
+                    "patient_birth_booking",
+                    "price",
+                    "description",
+                ]);
+                if($request->get('is_guest') == 0){
+                    $arr["patient_id"] = $request->get('patient_id');
+                }
+                $arr['doctor_clinic_id'] = DoctorClinic::where('doctor_id', $doctorId)->where('clinic_id', $clinicId)->first()->id;
+                $arr['booking_id'] = "BC" . Str::random(8);
+                $booking = new BookingClinic();
+                $booking->fill($arr);
+                $booking->save();
+                return $this->sendRespone($booking, "Successfully created");
+            } else {
+                return $this->sendError('Something wrong. Please try again!!');
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something wrong. Please try again!!', $e->getMessage());
+        }
+    }
 
     public function updateStatusBookingHome(UpdateStatusBookingRequest $request, BookingHome $booking)
     {

@@ -162,6 +162,16 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
 
+  // booking check out
+  {
+    path: "/admin/booking-home/checkout",
+    component: () => import("@/views/admin/booking/BookingHomeCheckout.vue"),
+    name: "booking-home-checkout",
+    meta: {
+      layout: "admin",
+    },
+  },
+
   // booking home details page
   {
     path: "/admin/booking-home/:id",

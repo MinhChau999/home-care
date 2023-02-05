@@ -118,7 +118,10 @@
                 <p class="inbox-item-author">Tomaslau</p>
                 <p class="inbox-item-text">I've finished it! See you so...</p>
                 <p class="inbox-item-date">
-                  <a href="#" class="btn btn-sm btn-link text-info font-13">
+                  <a
+                    href="javascript: void(0);"
+                    class="btn btn-sm btn-link text-info font-13"
+                  >
                     Reply
                   </a>
                 </p>
@@ -134,7 +137,10 @@
                 <p class="inbox-item-author">Stillnotdavid</p>
                 <p class="inbox-item-text">This theme is awesome!</p>
                 <p class="inbox-item-date">
-                  <a href="#" class="btn btn-sm btn-link text-info font-13">
+                  <a
+                    href="javascript: void(0);"
+                    class="btn btn-sm btn-link text-info font-13"
+                  >
                     Reply
                   </a>
                 </p>
@@ -150,7 +156,10 @@
                 <p class="inbox-item-author">Kurafire</p>
                 <p class="inbox-item-text">Nice to meet you</p>
                 <p class="inbox-item-date">
-                  <a href="#" class="btn btn-sm btn-link text-info font-13">
+                  <a
+                    href="javascript: void(0);"
+                    class="btn btn-sm btn-link text-info font-13"
+                  >
                     Reply
                   </a>
                 </p>
@@ -167,7 +176,10 @@
                 <p class="inbox-item-author">Shahedk</p>
                 <p class="inbox-item-text">Hey! there I'm available...</p>
                 <p class="inbox-item-date">
-                  <a href="#" class="btn btn-sm btn-link text-info font-13">
+                  <a
+                    href="javascript: void(0);"
+                    class="btn btn-sm btn-link text-info font-13"
+                  >
                     Reply
                   </a>
                 </p>
@@ -183,7 +195,10 @@
                 <p class="inbox-item-author">Adhamdannaway</p>
                 <p class="inbox-item-text">This theme is awesome!</p>
                 <p class="inbox-item-date">
-                  <a href="#" class="btn btn-sm btn-link text-info font-13">
+                  <a
+                    href="javascript: void(0);"
+                    class="btn btn-sm btn-link text-info font-13"
+                  >
                     Reply
                   </a>
                 </p>
@@ -203,7 +218,7 @@
             <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
               <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
                 <a
-                  href="#"
+                  href="javascript: void(0);"
                   class="nav-link rounded-0"
                   @click="activeTab = index"
                   :class="{ active: activeTab === index }"

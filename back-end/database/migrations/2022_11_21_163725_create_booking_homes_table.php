@@ -16,19 +16,22 @@ return new class extends Migration
         Schema::create('booking_homes', function (Blueprint $table) {
             $table->id();
             $table->string('booking_id')->unique();
-            $table->foreignId('patient_id')->constrained();
+            $table->foreignId('patient_id')->constrained()->nullable();
             $table->foreignId('doctor_id')->constrained('users')->nullable();
             $table->foreignId('service_id')->constrained();
             $table->date('date_booking');
             $table->time('time_booking');
             $table->string('email_notification');
+            $table->string('patient_name_booking')->nullable();
+            $table->string('patient_phone_booking')->nullable();
+            $table->date('patient_birth_booking')->nullable();
             $table->string('address');
             $table->double('price')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(0)->nullable();
             $table->timestamps();
 
-            $table->unique(['patient_id', 'doctor_id', 'date_booking', 'time_booking'], 'unique_doctor_home_time');
+            $table->unique(['doctor_id', 'date_booking', 'time_booking'], 'unique_doctor_home_time');
         });
     }
 

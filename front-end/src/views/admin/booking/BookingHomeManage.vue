@@ -28,7 +28,7 @@
             <div class="row mb-1">
               <div class="col-sm-4">
                 <router-link
-                  :to="{ name: 'user-create' }"
+                  :to="{ name: 'booking-home-checkout' }"
                   class="btn btn-danger mb-2"
                   ><i class="mdi mdi-plus-circle mr-2"></i> Add {{ title }}
                 </router-link>

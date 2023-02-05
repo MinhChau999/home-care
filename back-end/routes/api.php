@@ -82,14 +82,14 @@ Route::group([
 Route::group([
    'as' => 'bookings.',
    'prefix' => 'bookings',
-   // 'middleware' => 'role:admin',
+   'middleware' => 'role:admin',
 ], function () {
    // Get data from booking
    Route::get('/get-all-booking-homes', [ApiBookingController::class, 'getAllBookingHomes'])->name('getAllBookingHomes');
    Route::get('/get-all-booking-clinics', [ApiBookingController::class, 'getAllBookingClinics'])->name('getAllBookingClinics');
    
    // CRUD
-   Route::post('/store', [ApiUserController::class, 'store'])->name('store');
+   Route::post('/store', [ApiBookingController::class, 'store'])->name('store');
    Route::get('/edit-booking-home/{booking}', [ApiBookingController::class, 'editBookingHome'])->name('editBookingHome');
    Route::put('/update/{user}', [ApiUserController::class, 'update'])->name('update');
    Route::put('/update-status-booking-home/{booking}', [ApiBookingController::class, 'updateStatusBookingHome'])->name('updateStatusBookingHomeF');

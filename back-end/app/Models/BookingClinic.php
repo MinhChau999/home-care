@@ -10,6 +10,21 @@ class BookingClinic extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "booking_id",
+        "patient_id",
+        "doctor_clinic_id",
+        "service_id",
+        "date_booking",
+        "time_booking",
+        "email_notification",
+        "patient_name_booking",
+        "patient_phone_booking",
+        "patient_birth_booking",
+        "price",
+        "description",
+    ];
+
         /**
      * The attributes that should be cast.
      *

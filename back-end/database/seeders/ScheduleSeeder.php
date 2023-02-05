@@ -20,7 +20,7 @@ class ScheduleSeeder extends Seeder
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
         $userArray = User::query()->where('role', UserRoleEnum::Doctor)->pluck('id')->toArray();
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $arr[] = [
                 'doctor_id' => $faker->randomElement($userArray),
                 'time_of_day' => $faker->numberBetween(7, 21) . ':00',
