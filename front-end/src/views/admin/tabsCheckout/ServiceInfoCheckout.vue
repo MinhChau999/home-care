@@ -3,7 +3,7 @@
     <div class="service">
       <!-- end row-->
 
-      <h4 class="mt-4">Service</h4>
+      <h4 class="mt-4" @click="showBooking">Service</h4>
 
       <p class="text-muted mb-2">
         Fill the form below so we can send you the order's invoice.
@@ -62,7 +62,7 @@
               <label for="new-adr-first-name">Date</label>
               <input
                 class="form-control"
-                type="text"
+                type="date"
                 placeholder="Enter your first name"
                 id="new-adr-first-name"
               />
@@ -74,7 +74,7 @@
               <label for="new-adr-first-name">Time</label>
               <input
                 class="form-control"
-                type="text"
+                type="time"
                 placeholder="Enter your first name"
                 id="new-adr-first-name"
               />
@@ -186,6 +186,21 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  // component properties and methods
+  props: ["modelValue"],
+  data() {
+    const booking = this.modelValue;
+    return {
+      booking,
+    };
+  },
+  emits: ["update:modelValue"],
+  methods: {
+    changePageTitle() {
+      this.$emit("update:modelValue"); // previously was `this.$emit('input', title)`
+    },
+    showBooking() {
+      console.log(this.booking);
+    },
+  },
 });
 </script>

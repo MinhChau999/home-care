@@ -604,12 +604,21 @@ export default defineComponent({
       this.$store.state.authAdmin.admin.roleName = user.roleName;
       this.$store.state.authAdmin.admin.role = user.role;
       this.$store.state.authAdmin.admin.avatar = user.avatar;
-      const admin = JSON.parse(localStorage.getItem("tokenadmin") || "[]");
-      admin.name = user.name;
-      admin.roleName = user.roleName;
-      admin.role = user.role;
-      admin.avatar = user.avatar;
-      localStorage.setItem("tokenadmin", JSON.stringify(admin));
+      try {
+        const admin = JSON.parse(localStorage.getItem("tokenadmin") || "[]");
+        admin.name = user.name;
+        admin.roleName = user.roleName;
+        admin.role = user.role;
+        admin.avatar = user.avatar;
+        try {
+          localStorage.setItem("tokenadmin", JSON.stringify(admin));
+          // Do something with the parsed data
+        } catch (e) {
+          console.error("Error parsing JSON: ", e);
+        }
+      } catch (e) {
+        console.error("Error parsing or updating tokenadmin JSON:", e);
+      }
     },
     changPassword() {
       this.isPendingPassword = true;

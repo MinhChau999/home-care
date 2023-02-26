@@ -7,7 +7,12 @@ class AuthService {
       password: user.password,
     }).then((response) => {
       if (response.data.data.token) {
-        localStorage.setItem("token", JSON.stringify(response.data.data));
+        try {
+          localStorage.setItem("token", JSON.stringify(response.data.data));
+          // Do something with the parsed data
+        } catch (e) {
+          console.error("Error parsing JSON: ", e);
+        }
       }
       return response;
     });
@@ -19,7 +24,15 @@ class AuthService {
       password: user.password,
     }).then((response) => {
       if (response.data.data.token) {
-        localStorage.setItem("tokenadmin", JSON.stringify(response.data.data));
+        try {
+          localStorage.setItem(
+            "tokenadmin",
+            JSON.stringify(response.data.data)
+          );
+          // Do something with the parsed data
+        } catch (e) {
+          console.error("Error parsing JSON: ", e);
+        }
       }
       return response;
     });
@@ -40,7 +53,12 @@ class AuthService {
       password: user.password,
     }).then((response) => {
       if (response.data.data.token) {
-        localStorage.setItem("token", JSON.stringify(response.data.data));
+        try {
+          localStorage.setItem("token", JSON.stringify(response.data.data));
+          // Do something with the parsed data
+        } catch (e) {
+          console.error("Error parsing JSON: ", e);
+        }
       }
       return response;
     });

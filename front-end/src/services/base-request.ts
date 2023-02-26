@@ -4,11 +4,16 @@ import axios from "axios";
 
 class BassRequest {
   authHeader(role = "") {
-    const user = JSON.parse(localStorage.getItem("token" + role) || "[]");
-    if (user && user.token) {
-      return { Authorization: "Bearer " + user.token };
+    let headers = {};
+    try {
+      const user = JSON.parse(localStorage.getItem("token" + role) || "[]");
+      if (user && user.token) {
+        headers = { Authorization: "Bearer " + user.token };
+      }
+    } catch (e) {
+      console.error("Error parsing JSON: ", e);
     }
-    return {};
+    return headers;
   }
 
   get(url: string, role: any = "") {

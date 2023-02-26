@@ -1,14 +1,27 @@
 import AuthService from "@/services/auth.service";
 
-const user = JSON.parse(localStorage.getItem("token") || "[]");
-const admin = JSON.parse(localStorage.getItem("tokenadmin") || "[]");
+let user = null;
+let admin = null;
+
+try {
+  user = JSON.parse(localStorage.getItem("token") || "null");
+} catch (e) {
+  console.error("Error parsing user JSON:", e);
+}
+
+try {
+  admin = JSON.parse(localStorage.getItem("tokenadmin") || "null");
+} catch (e) {
+  console.error("Error parsing admin JSON:", e);
+}
+
 const initialStateUser =
-  user.token != null
+  user && user.token != null
     ? { status: { loggedIn: true }, user }
     : { status: { loggedIn: false }, user: null };
 
 const initialStateAdmin =
-  admin.token != null
+  admin && admin.token != null
     ? { status: { loggedIn: true }, admin }
     : { status: { loggedIn: false }, admin: null };
 

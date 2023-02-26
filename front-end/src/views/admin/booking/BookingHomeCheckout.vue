@@ -49,7 +49,7 @@
                       <template v-for="(tab, index) in tabs">
                         <component
                           :key="index"
-                          v-model="user"
+                          v-model="booking"
                           :is="tab.component"
                           v-if="index === activeTab"
                         />
@@ -81,7 +81,10 @@
                       </div>
                     </div>
                     <div class="col-lg-4">
-                      <div class="border p-3 mt-4 mt-lg-0 rounded">
+                      <div
+                        class="border p-3 mt-4 mt-lg-0 rounded"
+                        @click="showBooking"
+                      >
                         <h4 class="header-title mb-3">Order Summary</h4>
 
                         <div class="table-responsive">
@@ -219,7 +222,23 @@ export default defineComponent({
   },
 
   data() {
+    const booking = {
+      doctor_id: "",
+      service_id: "",
+      date_booking: "",
+      time_booking: "",
+      email_notification: "",
+      patient_name_booking: "",
+      patient_phone_booking: "",
+      patient_birth_booking: "",
+      address: "",
+      price: "",
+      description: "",
+      patient_id: "",
+      booking_id: "",
+    };
     return {
+      booking,
       activeTab: 0,
       tabs: [
         {
@@ -237,6 +256,10 @@ export default defineComponent({
 
   watch: {},
 
-  methods: {},
+  methods: {
+    showBooking() {
+      console.log(this.booking);
+    },
+  },
 });
 </script>

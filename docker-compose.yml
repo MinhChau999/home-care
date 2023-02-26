@@ -50,7 +50,7 @@ services:
     image: 'node:19.0.1-alpine3.15'
     container_name: 'npm_${APP_NAME}'
     volumes:
-      - './:/usr/share/nginx/html'
+      - './front-end:/usr/share/nginx/html'
     working_dir: /usr/share/nginx/html
     networks:
       - app-network
