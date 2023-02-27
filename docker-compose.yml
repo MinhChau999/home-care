@@ -47,7 +47,7 @@ services:
       
 
   npm:
-    image: 'node:19.0.1-alpine3.15'
+    image: 'node:19.7'
     container_name: 'npm_${APP_NAME}'
     volumes:
       - './front-end:/usr/share/nginx/html'
