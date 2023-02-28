@@ -4,13 +4,13 @@ let user = null;
 let admin = null;
 
 try {
-  user = JSON.parse(localStorage.getItem("token") || "null");
+  user = JSON.parse(localStorage.getItem("token") || "");
 } catch (e) {
   console.error("Error parsing user JSON:", e);
 }
 
 try {
-  admin = JSON.parse(localStorage.getItem("tokenadmin") || "null");
+  admin = JSON.parse(localStorage.getItem("tokenadmin") || "");
 } catch (e) {
   console.error("Error parsing admin JSON:", e);
 }
