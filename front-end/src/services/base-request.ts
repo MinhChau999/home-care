@@ -1,4 +1,4 @@
-const apiUrl = "http://35.241.110.16:8000/api";
+const apiUrl = "http://localhost:8000/api";
 
 import axios from "axios";
 
